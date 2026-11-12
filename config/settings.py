@@ -93,14 +93,17 @@ DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite').lower()
 if DATABASE_URL:
     _is_postgres_url = DATABASE_URL.startswith(('postgres://', 'postgresql://', 'postgis://'))
     _db_ssl_require = os.getenv('DB_SSL_REQUIRE', 'True').lower() in ('true', '1', 'yes')
-    DATABASES = {
-        'default': dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=int(os.getenv('DB_CONN_MAX_AGE', '600')),
-            conn_health_checks=True,
-            ssl_require=_db_ssl_require if _is_postgres_url else False,
-        )
-    }
+    _db_cfg = dj_database_url.parse(
+        DATABASE_URL,
+        conn_max_age=int(os.getenv('DB_CONN_MAX_AGE', '600')),
+        conn_health_checks=True,
+        ssl_require=_db_ssl_require if _is_postgres_url else False,
+    )
+    if _is_postgres_url and '-pooler' in (_db_cfg.get('HOST') or ''):
+        _db_cfg['DISABLE_SERVER_SIDE_CURSORS'] = True
+        _db_cfg['CONN_MAX_AGE'] = int(os.getenv('DB_CONN_MAX_AGE', '0'))
+        _db_cfg.setdefault('OPTIONS', {})['prepare_threshold'] = None
+    DATABASES = {'default': _db_cfg}
 elif DB_ENGINE == 'mysql' or os.getenv('USE_MYSQL', 'False').lower() in ('true', '1', 'yes'):
     DATABASES = {
         'default': {

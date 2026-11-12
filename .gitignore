@@ -36,3 +36,7 @@ Thumbs.db
 # Local backups
 /backups/
 backups/
+
+# Neon CLI local link context
+.neon
+.neon/
