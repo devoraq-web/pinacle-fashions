@@ -1,0 +1,203 @@
+from decimal import Decimal
+from django.test import TestCase, Client
+from django.urls import reverse
+from django.contrib.auth.models import User
+
+from store.models import Category, Product, ProductImage, ContactMessage, NewsletterSubscriber
+from orders.models import Order, OrderItem, CustomerAddress
+from orders.whatsapp import get_whatsapp_order_url, format_whatsapp_message
+
+
+class PinacleFashionsSystemTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        # Admin user
+        self.admin = User.objects.create_superuser(
+            username='testadmin',
+            email='admin@pinaclefashions.com',
+            password='testpassword123'
+        )
+
+        # Category
+        self.category = Category.objects.create(
+            name="Sarees",
+            slug="sarees",
+            description="Pure silk sarees"
+        )
+
+        # In-stock product
+        self.product = Product.objects.create(
+            category=self.category,
+            name="Royal Maroon Kanjeevaram Saree",
+            slug="royal-maroon-kanjeevaram-saree",
+            sku="PF-SR-TEST",
+            description="Exquisite silk saree",
+            specifications="Fabric: Pure Silk",
+            regular_price=Decimal("4999.00"),
+            sale_price=Decimal("3999.00"),
+            stock_quantity=10,
+            available_sizes="Free Size",
+            available_colours="Maroon, Gold",
+            is_active=True,
+            is_featured=True,
+            is_new_arrival=True,
+        )
+
+        # Out-of-stock product
+        self.oos_product = Product.objects.create(
+            category=self.category,
+            name="Sold Out Silk Saree",
+            slug="sold-out-silk-saree",
+            sku="PF-SR-OOS",
+            description="Sold out item",
+            regular_price=Decimal("2999.00"),
+            stock_quantity=0,
+            is_active=True
+        )
+
+    def test_customer_pages_render(self):
+        """Test customer-facing pages load with HTTP 200."""
+        routes = [
+            reverse('store:home'),
+            reverse('store:shop'),
+            reverse('store:new_arrivals'),
+            reverse('store:categories'),
+            reverse('store:category_detail', kwargs={'slug': self.category.slug}),
+            reverse('store:product_detail', kwargs={'slug': self.product.slug}),
+            reverse('store:cart'),
+            reverse('store:wishlist'),
+            reverse('store:about'),
+            reverse('store:contact'),
+        ]
+        for route in routes:
+            response = self.client.get(route)
+            self.assertEqual(response.status_code, 200, f"Route {route} failed with {response.status_code}")
+
+    def test_cart_session_flow(self):
+        """Test guest add to cart, update quantity, and remove."""
+        response = self.client.post(
+            reverse('store:cart_add', kwargs={'product_id': self.product.id}),
+            {'quantity': 2, 'size': 'Free Size', 'colour': 'Maroon'}
+        )
+        self.assertEqual(response.status_code, 302)
+        cart_page = self.client.get(reverse('store:cart'))
+        self.assertContains(cart_page, self.product.name)
+
+        # Try adding out-of-stock product
+        oos_response = self.client.post(
+            reverse('store:cart_add', kwargs={'product_id': self.oos_product.id}),
+            {'quantity': 1}
+        )
+        cart_page = self.client.get(reverse('store:cart'))
+        self.assertNotContains(cart_page, self.oos_product.name)
+
+    def test_wishlist_toggle(self):
+        """Test guest wishlist toggle."""
+        response = self.client.post(
+            reverse('store:wishlist_toggle', kwargs={'product_id': self.product.id}),
+            HTTP_X_REQUESTED_WITH='XMLHttpRequest'
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertTrue(data['success'])
+        self.assertTrue(data['added'])
+        self.assertEqual(data['wishlist_count'], 1)
+
+    def test_whatsapp_checkout_buy_now(self):
+        """Test Buy Now checkout creates order and encodes WhatsApp message."""
+        checkout_data = {
+            'order_source': 'BUY_NOW',
+            'product_id': self.product.id,
+            'quantity': 1,
+            'size': 'Free Size',
+            'colour': 'Maroon',
+            'full_name': 'Lakshmi Priya',
+            'mobile_number': '9847123456',
+            'house_name_number': 'Aura Heritage Villa #12',
+            'street_location': 'MG Road',
+            'city': 'Kochi',
+            'district': 'Ernakulam',
+            'state': 'Kerala',
+            'pin_code': '682001',
+            'delivery_instructions': 'Call before delivery',
+        }
+        initial_stock = self.product.stock_quantity
+        response = self.client.post(reverse('orders:checkout'), checkout_data)
+        
+        self.assertEqual(response.status_code, 302)
+        order = Order.objects.filter(customer_name='Lakshmi Priya').first()
+        self.assertIsNotNone(order)
+        self.assertEqual(order.items.count(), 1)
+        self.assertEqual(order.total_price, self.product.price)
+        
+        self.product.refresh_from_db()
+        self.assertEqual(self.product.stock_quantity, initial_stock - 1)
+
+        self.assertIn('https://wa.me/916238006820?text=', order.whatsapp_url)
+        self.assertIn('PINACLE', order.whatsapp_url)
+
+    def test_cart_checkout_multiple_items(self):
+        """Test multi-item cart checkout."""
+        # Add 2 items to cart
+        self.client.post(
+            reverse('store:cart_add', kwargs={'product_id': self.product.id}),
+            {'quantity': 2, 'size': 'Free Size', 'colour': 'Maroon'}
+        )
+        checkout_data = {
+            'order_source': 'CART',
+            'full_name': 'Ananya Menon',
+            'mobile_number': '9123456789',
+            'house_name_number': 'House No. 44',
+            'street_location': 'Panampilly Nagar',
+            'city': 'Kochi',
+            'district': 'Ernakulam',
+            'state': 'Kerala',
+            'pin_code': '682036',
+        }
+        response = self.client.post(reverse('orders:checkout'), checkout_data)
+        self.assertEqual(response.status_code, 302)
+        order = Order.objects.filter(customer_name='Ananya Menon').first()
+        self.assertIsNotNone(order)
+        self.assertEqual(order.items.count(), 1)
+        self.assertEqual(order.items.first().quantity, 2)
+        self.assertEqual(order.total_price, self.product.price * 2)
+
+    def test_contact_and_newsletter(self):
+        """Test contact form and newsletter subscription."""
+        contact_res = self.client.post(reverse('store:contact'), {
+            'name': 'Gauri',
+            'phone': '9895123456',
+            'email': 'gauri@gmail.com',
+            'subject': 'Saree Inquiries',
+            'message': 'Do you ship to Dubai?'
+        })
+        self.assertEqual(contact_res.status_code, 302)
+        self.assertTrue(ContactMessage.objects.filter(name='Gauri').exists())
+
+        news_res = self.client.post(reverse('store:newsletter_signup'), {'email': 'vip@pinacle.com'})
+        self.assertTrue(NewsletterSubscriber.objects.filter(email='vip@pinacle.com').exists())
+
+    def test_admin_dashboard_protection_and_access(self):
+        """Test that unauthenticated users are redirected and admin has full access."""
+        overview_url = reverse('dashboard:overview')
+        
+        anon_response = self.client.get(overview_url)
+        self.assertEqual(anon_response.status_code, 302)
+
+        self.client.login(username='testadmin', password='testpassword123')
+        admin_response = self.client.get(overview_url)
+        self.assertEqual(admin_response.status_code, 200)
+        self.assertContains(admin_response, "Executive Dashboard Overview")
+
+        routes = [
+            reverse('dashboard:product_list'),
+            reverse('dashboard:product_create'),
+            reverse('dashboard:product_edit', kwargs={'pk': self.product.pk}),
+            reverse('dashboard:category_list'),
+            reverse('dashboard:inventory'),
+            reverse('dashboard:order_list'),
+        ]
+        for r in routes:
+            res = self.client.get(r)
+            self.assertEqual(res.status_code, 200, f"Dashboard route {r} failed with {res.status_code}")

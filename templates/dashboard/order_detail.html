@@ -1,0 +1,185 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block page_title %}Order #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
+        <div class="d-flex align-items-center gap-2 mb-1">
+            <h3 class="serif-title mb-0">Order #{{ order.order_number }}</h3>
+            <span class="badge {{ order.status_badge_class }} badge-status">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+        <p class="text-muted small mb-0">
+            Placed via <strong>{{ order.get_order_source_display }}</strong> on {{ order.created_at|date:"d M Y, h:i A" }}
+        </p>
+    </div>
+    
+    <div class="d-flex gap-2">
+        <a href="{% url 'dashboard:order_invoice' order.order_number %}" target="_blank" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-print me-1"></i> Print Packing Slip
+        </a>
+        <a href="{{ customer_wa_link }}" target="_blank" rel="noopener" class="btn btn-whatsapp-buy btn-sm">
+            <i class="fab fa-whatsapp fs-5"></i> Chat With Customer
+        </a>
+        <a href="{% url 'dashboard:order_list' %}" class="btn btn-outline-dark btn-sm">
+            <i class="fas fa-arrow-left me-1"></i> Back to Orders
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    
+    <!-- Ordered Items Card -->
+    <div class="col-lg-8">
+        <div class="dash-card mb-4">
+            <div class="dash-card-header">
+                <h5 class="serif-title mb-0">Ordered Items Snapshot</h5>
+                <span class="badge bg-light text-dark border">{{ items|length }} Unique Item(s)</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table dash-table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>SKU</th>
+                            <th>Size / Colour</th>
+                            <th>Unit Price</th>
+                            <th>Qty</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        {% if item.product_image_url %}
+                                            <img src="{{ item.product_image_url }}" alt="{{ item.product_name }}" style="width: 44px; height: 56px; object-fit: cover; border-radius: 4px;">
+                                        {% endif %}
+                                        <div>
+                                            <div class="fw-bold text-dark">{{ item.product_name }}</div>
+                                            {% if item.product %}
+                                                <a href="{{ item.product.get_absolute_url }}" target="_blank" class="small text-muted text-decoration-none">View Catalog Listing</a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><code class="text-muted">{{ item.product_code }}</code></td>
+                                <td>
+                                    <span class="badge bg-light text-dark border">{{ item.selected_size }}</span>
+                                    <span class="badge bg-light text-dark border">{{ item.selected_colour }}</span>
+                                </td>
+                                <td>₹{{ item.unit_price|intcomma }}</td>
+                                <td class="fw-bold">{{ item.quantity }}</td>
+                                <td class="text-end fw-bold">₹{{ item.total_price|intcomma }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" class="text-end text-muted small">Subtotal:</td>
+                            <td class="text-end fw-semibold">₹{{ order.subtotal|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="text-end text-muted small">Shipping:</td>
+                            <td class="text-end text-success fw-semibold">FREE</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="text-end fs-6 fw-bold">Grand Total:</td>
+                            <td class="text-end fs-5 fw-bold text-dark">₹{{ order.total_price|intcomma }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Order WhatsApp Encoded Link Generator Record -->
+        {% if order.whatsapp_url %}
+            <div class="dash-card p-4">
+                <h6 class="serif-title mb-2">WhatsApp Order Link (System Copy)</h6>
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm bg-light" value="{{ order.whatsapp_url }}" readonly>
+                    <a href="{{ order.whatsapp_url }}" target="_blank" class="btn btn-sm btn-outline-success">
+                        <i class="fab fa-whatsapp me-1"></i> Test Link
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Customer Details & Order Status Controls -->
+    <div class="col-lg-4">
+        
+        <!-- Status Update Card -->
+        <div class="dash-card p-4 mb-4">
+            <h5 class="serif-title mb-3 pb-2 border-bottom">Update Order Status</h5>
+            
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-uppercase">Current Status</label>
+                    {{ form.status }}
+                </div>
+                <button type="submit" class="btn btn-gold btn-sm w-100 py-2">
+                    <i class="fas fa-sync-alt me-1"></i> Update Status
+                </button>
+            </form>
+        </div>
+
+        <!-- Customer & Delivery Address Card -->
+        <div class="dash-card p-4">
+            <h5 class="serif-title mb-3 pb-2 border-bottom">Customer & Shipping Details</h5>
+
+            <div class="mb-3">
+                <span class="text-muted small text-uppercase fw-bold d-block">Recipient Name</span>
+                <strong class="fs-6 text-dark">{{ order.customer_name }}</strong>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-muted small text-uppercase fw-bold d-block">Mobile / WhatsApp</span>
+                <a href="https://wa.me/{{ order.customer_phone }}" target="_blank" rel="noopener" class="text-success fw-bold text-decoration-none">
+                    <i class="fab fa-whatsapp me-1"></i> {{ order.customer_phone }}
+                </a>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="mb-2">
+                <span class="text-muted small text-uppercase fw-bold d-block">House / Building</span>
+                <span>{{ address.house_name_number }}</span>
+            </div>
+
+            <div class="mb-2">
+                <span class="text-muted small text-uppercase fw-bold d-block">Street / Area</span>
+                <span>{{ address.street_location }}</span>
+            </div>
+
+            <div class="mb-2">
+                <span class="text-muted small text-uppercase fw-bold d-block">City, District & State</span>
+                <span>{{ address.city }}, {{ address.district }}, {{ address.state }}</span>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-muted small text-uppercase fw-bold d-block">PIN Code</span>
+                <span class="badge bg-light text-dark border fs-6">{{ address.pin_code }}</span>
+            </div>
+
+            {% if address.delivery_instructions %}
+                <div class="p-3 bg-light rounded small border">
+                    <strong class="d-block text-dark mb-1"><i class="fas fa-sticky-note text-warning me-1"></i> Delivery Notes:</strong>
+                    {{ address.delivery_instructions }}
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
+

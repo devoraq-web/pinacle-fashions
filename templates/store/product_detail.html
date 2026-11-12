@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="pf-section-ivory py-4 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb small mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'store:home' %}" class="text-muted">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'store:shop' %}" class="text-muted">Shop</a></li>
+                <li class="breadcrumb-item"><a href="{{ product.category.get_absolute_url }}" class="text-muted">{{ product.category.name }}</a></li>
+                <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">{{ product.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<section class="pf-section-ivory pf-section-pad pt-5">
+    <div class="container">
+        <div class="row g-5 align-items-start">
+            <!-- Left Column: Interactive Zoom Gallery -->
+            <div class="col-lg-6">
+                <div class="pf-gallery-main" id="pfZoomContainer" role="button" tabindex="0" aria-label="Click or hover to zoom product image">
+                    {% if product.primary_image %}
+                    <img src="{{ product.primary_image.image.url }}" alt="{{ product.primary_image.alt_text|default:product.name }}" id="pfDetailMainImg">
+                    {% elif images %}
+                    <img src="{{ images.0.image.url }}" alt="{{ product.name }}" id="pfDetailMainImg">
+                    {% else %}
+                    <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ product.name }}" id="pfDetailMainImg">
+                    {% endif %}
+
+                    {% if not product.is_in_stock %}
+                    <span class="pf-badge pf-badge-stockout">Sold Out</span>
+                    {% elif product.is_on_sale %}
+                    <span class="pf-badge pf-badge-sale">-{{ product.discount_percentage }}%</span>
+                    {% elif product.is_new_arrival %}
+                    <span class="pf-badge pf-badge-new">New</span>
+                    {% endif %}
+
+                    <span class="position-absolute bottom-0 end-0 m-3 badge bg-dark bg-opacity-75 text-white fw-normal px-3 py-2" style="font-size: 0.7rem; letter-spacing: 0.1em;">
+                        <i class="fas fa-magnifying-glass-plus me-1 text-gold"></i> Click / Hover to Zoom
+                    </span>
+                </div>
+
+                {% if images|length > 1 %}
+                <div class="pf-gallery-thumbs" role="list" aria-label="Product angle thumbnails">
+                    {% for img in images %}
+                    <button type="button"
+                            class="pf-thumb-item p-0 pf-detail-thumb-btn {% if product.primary_image and img.id == product.primary_image.id %}active{% elif not product.primary_image and forloop.first %}active{% endif %}"
+                            data-img-src="{{ img.image.url }}"
+                            aria-label="View angle {{ forloop.counter }}">
+                        <img src="{{ img.image.url }}" alt="{{ product.name }} angle {{ forloop.counter }}">
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Right Column: Details, Selectors & Direct Concierge Purchase -->
+            <div class="col-lg-6">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <a href="{{ product.category.get_absolute_url }}" class="eyebrow-text">{{ product.category.name }}</a>
+                    <span class="small text-muted">SKU: <strong class="text-dark">{{ product.sku }}</strong></span>
+                </div>
+
+                <h1 class="serif-display display-5 fw-semibold mb-3">{{ product.name }}</h1>
+
+                <div class="d-flex align-items-center flex-wrap gap-3 mb-3">
+                    <div class="d-flex align-items-center gap-1 text-gold">
+                        <i class="fas fa-star"></i>
+                        <span class="fw-semibold text-dark small ms-1">{{ product.average_rating }}</span>
+                        <span class="text-muted small">({{ product.reviews_count }} review{{ product.reviews_count|pluralize }})</span>
+                    </div>
+                    <span aria-hidden="true" class="text-muted">&middot;</span>
+                    {% if not product.is_in_stock %}
+                    <span class="pf-product-stock-pill pf-stock-out fw-semibold"><i class="fas fa-circle-xmark"></i> Out of Stock</span>
+                    {% elif product.stock_quantity <= 4 %}
+                    <span class="pf-product-stock-pill pf-stock-low fw-semibold"><i class="fas fa-clock"></i> Limited: Only {{ product.stock_quantity }} remaining</span>
+                    {% else %}
+                    <span class="pf-product-stock-pill pf-stock-in fw-semibold"><i class="fas fa-check-circle"></i> Ready to Dispatch ({{ product.stock_quantity }} available)</span>
+                    {% endif %}
+                </div>
+
+                <!-- Price Display -->
+                <div class="p-3 mb-4 bg-white border rounded d-flex align-items-baseline flex-wrap gap-3" style="border-color: var(--pf-border) !important;">
+                    <span class="display-6 fw-semibold text-dark">₹{{ product.price|floatformat:0 }}</span>
+                    {% if product.is_on_sale %}
+                    <span class="fs-5 text-muted text-decoration-line-through">₹{{ product.regular_price|floatformat:0 }}</span>
+                    <span class="pf-discount-tag fs-6">Save {{ product.discount_percentage }}%</span>
+                    {% endif %}
+                    <span class="small text-muted ms-auto">Inclusive of all taxes</span>
+                </div>
+
+                {% if product.description %}
+                <p class="text-muted mb-4" style="line-height: 1.8;">{{ product.description|truncatewords:36 }}</p>
+                {% endif %}
+
+                {% if product.is_in_stock %}
+                <form action="{% url 'store:cart_add' product.id %}" method="POST" class="ajax-add-to-cart-form" id="detailAddToCartForm">
+                    {% csrf_token %}
+
+                    {% if sizes %}
+                    <div class="mb-4">
+                        <span class="pf-selector-label">Available Sizes</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for sz in sizes %}
+                            <label class="pf-option-pill">
+                                <input type="radio" name="size" value="{{ sz }}" {% if forloop.first %}checked{% endif %} class="detail-option-input">
+                                <span>{{ sz }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if colours %}
+                    <div class="mb-4">
+                        <span class="pf-selector-label">Available Shades</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for col in colours %}
+                            <label class="pf-option-pill">
+                                <input type="radio" name="colour" value="{{ col }}" {% if forloop.first %}checked{% endif %} class="detail-option-input">
+                                <span>{{ col }}</span>
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <span class="pf-selector-label">Quantity</span>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="pf-qty-group">
+                                <button type="button" class="pf-qty-btn" id="detailQtyMinus" aria-label="Decrease quantity"><i class="fas fa-minus small"></i></button>
+                                <input type="number" name="quantity" id="detailQtyInput" class="pf-qty-input detail-option-input" value="1" min="1" max="{{ product.stock_quantity }}" readonly>
+                                <button type="button" class="pf-qty-btn" id="detailQtyPlus" data-max="{{ product.stock_quantity }}" aria-label="Increase quantity"><i class="fas fa-plus small"></i></button>
+                            </div>
+                            <span class="small text-muted">Max {{ product.stock_quantity }} available</span>
+                        </div>
+                    </div>
+
+                    <div class="d-grid d-sm-flex gap-3 mb-4">
+                        <button type="submit" class="btn btn-gold flex-fill justify-content-center py-3">
+                            <i class="fas fa-shopping-bag"></i> Add to Shopping Bag
+                        </button>
+                        <a href="{% url 'orders:checkout' %}?source=BUY_NOW&product_id={{ product.id }}&quantity=1{% if sizes %}&size={{ sizes.0|urlencode }}{% endif %}{% if colours %}&colour={{ colours.0|urlencode }}{% endif %}"
+                           id="detailBuyNowBtn"
+                           data-base-url="{% url 'orders:checkout' %}?source=BUY_NOW&product_id={{ product.id }}"
+                           class="btn btn-whatsapp-buy flex-fill justify-content-center py-3">
+                            <i class="fab fa-whatsapp fs-5"></i> Buy Now on WhatsApp
+                        </a>
+                        <button type="button"
+                                class="btn btn-gold-outline btn-wishlist-toggle px-3 py-3 {% if product.id in wishlist_ids %}active{% endif %}"
+                                data-url="{% url 'store:wishlist_toggle' product.id %}"
+                                data-product-id="{{ product.id }}"
+                                aria-label="Toggle wishlist">
+                            <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <div class="pf-checkout-card border-danger mb-4">
+                    <h2 class="h6 fw-semibold text-danger mb-2"><i class="fas fa-ban me-2"></i>Currently Out of Stock</h2>
+                    <p class="small text-muted mb-3">This boutique piece is presently unavailable. Request a private restock alert via our WhatsApp atelier.</p>
+                    <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%20PINACLE%20FASHIONS%2C%20please%20notify%20me%20when%20{{ product.name|urlencode }}%20({{ product.sku|urlencode }})%20is%20restocked."
+                       target="_blank" rel="noopener noreferrer" class="btn btn-gold-outline btn-sm">
+                        <i class="fab fa-whatsapp me-1"></i> Request Restock Alert
+                    </a>
+                </div>
+                {% endif %}
+
+                <!-- Service Assurances -->
+                <div class="row g-2 pt-3 border-top small text-muted" style="border-color: var(--pf-border) !important;">
+                    <div class="col-6 col-sm-4 d-flex align-items-center gap-2 py-1">
+                        <i class="fas fa-truck-fast text-gold"></i> <span>Free Ship ₹2,999+</span>
+                    </div>
+                    <div class="col-6 col-sm-4 d-flex align-items-center gap-2 py-1">
+                        <i class="fas fa-rotate-left text-gold"></i> <span>7-Day Exchanges</span>
+                    </div>
+                    <div class="col-12 col-sm-4 d-flex align-items-center gap-2 py-1">
+                        <i class="fab fa-whatsapp text-gold"></i> <span>Direct Styling Help</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Description, Specifications & Reviews -->
+        <div class="row g-4 mt-5">
+            <div class="col-lg-7">
+                <div class="pf-checkout-card h-100">
+                    <h2 class="serif-title h4 fw-semibold mb-3">Design Story &amp; Specifications</h2>
+                    <div class="pf-divider-gold"></div>
+                    <div class="text-muted mb-4" style="line-height: 1.85; white-space: pre-line;">{{ product.description }}</div>
+
+                    {% if specs %}
+                    <h3 class="pf-selector-label mt-4">Craft Details</h3>
+                    <table class="pf-spec-table">
+                        <tbody>
+                            {% for key, val in specs.items %}
+                            <tr>
+                                <th scope="row">{{ key }}</th>
+                                <td>{{ val }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="pf-checkout-card h-100">
+                    <h2 class="serif-title h4 fw-semibold mb-3">Client Reviews ({{ reviews|length }})</h2>
+                    <div class="pf-divider-gold"></div>
+
+                    {% if reviews %}
+                    <div class="d-flex flex-column gap-3 mb-4" style="max-height: 290px; overflow-y: auto;">
+                        {% for rev in reviews %}
+                        <div class="p-3 rounded border" style="background: var(--pf-ivory); border-color: var(--pf-border) !important;">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong class="small text-dark">{{ rev.customer_name }}</strong>
+                                <span class="text-gold small">
+                                    {% for _ in rev.stars_range %}<i class="fas fa-star"></i>{% endfor %}
+                                </span>
+                            </div>
+                            <p class="small text-muted mb-1">{{ rev.review_text }}</p>
+                            <span class="text-muted" style="font-size: 0.7rem;">{{ rev.created_at|date:"M d, Y" }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="small text-muted mb-4">Be the first patron to review this creation.</p>
+                    {% endif %}
+
+                    <h3 class="pf-selector-label">Share Your Impression</h3>
+                    {% if review_form.errors %}
+                    <div class="alert alert-danger small py-2 mb-3">
+                        {% for error in review_form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                        {% for field in review_form %}
+                            {% for error in field.errors %}<div><strong>{{ field.label }}:</strong> {{ error }}</div>{% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{{ product.get_absolute_url }}">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <label for="{{ review_form.customer_name.id_for_label }}" class="visually-hidden">Your Name</label>
+                            {{ review_form.customer_name }}
+                        </div>
+                        <div class="mb-2">
+                            <label for="{{ review_form.rating.id_for_label }}" class="visually-hidden">Rating</label>
+                            {{ review_form.rating }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ review_form.review_text.id_for_label }}" class="visually-hidden">Your Review</label>
+                            {{ review_form.review_text }}
+                        </div>
+                        <button type="submit" name="submit_review" class="btn btn-gold btn-sm w-100 justify-content-center">
+                            Submit Review
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if related_products %}
+<section class="pf-section-cream pf-section-pad border-top" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="mb-4">
+            <span class="eyebrow-text">Curated Pairings</span>
+            <h2 class="serif-title h2 fw-semibold mt-1 mb-0">You May Also Adore</h2>
+        </div>
+        <div class="pf-product-grid">
+            {% for rp in related_products %}
+                {% include 'components/product_card.html' with product=rp %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if recently_viewed_products %}
+<section class="pf-section-ivory pf-section-pad border-top" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="mb-4">
+            <span class="eyebrow-text">Revisit Your Selections</span>
+            <h2 class="serif-title h2 fw-semibold mt-1 mb-0">Recently Viewed</h2>
+        </div>
+        <div class="pf-product-grid">
+            {% for rv in recently_viewed_products %}
+                {% include 'components/product_card.html' with product=rv %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

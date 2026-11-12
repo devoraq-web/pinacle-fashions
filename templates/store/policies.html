@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Boutique Policies &amp; Garment Care | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<!-- Header Band -->
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container text-center">
+        <span class="eyebrow-text">Assurance &amp; Transparency</span>
+        <h1 class="serif-display fw-semibold mt-2 mb-3">Boutique Policies &amp; Heritage Care</h1>
+        <div class="gold-flourish-divider mx-auto" style="max-width: 240px;"><span>&#10022;</span></div>
+        <p class="text-muted mx-auto mb-0" style="max-width: 640px;">
+            Everything you need to know about our direct WhatsApp ordering flow, insured Pan-India dispatch, graceful returns, and preserving handloom silk heirlooms.
+        </p>
+    </div>
+</section>
+
+<!-- Policy Sections -->
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Direct WhatsApp Ordering -->
+            <div class="col-lg-6">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="pf-step-number"><i class="fab fa-whatsapp"></i></span>
+                        <h2 class="serif-title h4 mb-0">Direct WhatsApp Ordering</h2>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        PINACLE FASHIONS offers a transparent, zero-gateway personal boutique ordering experience via our official concierge at <strong>{{ WHATSAPP_DISPLAY_NUMBER }}</strong>.
+                    </p>
+                    <ul class="small text-muted ps-3 mb-0">
+                        <li class="mb-2">Each order submitted at checkout records a permanent reference ID and reserves your selected inventory immediately.</li>
+                        <li class="mb-2">Your pre-formatted order sheet opens on WhatsApp so our stylists can confirm delivery timelines, measurements, or custom blouse inquiries before payment coordination.</li>
+                        <li>No credit card or automated payment credentials are ever collected on this website.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Shipping & Dispatch -->
+            <div class="col-lg-6">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="pf-step-number"><i class="fas fa-truck-fast"></i></span>
+                        <h2 class="serif-title h4 mb-0">Shipping &amp; Pan-India Delivery</h2>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        Every garment is steam-finished, folded in acid-free tissue, and dispatched in our signature keepsake box.
+                    </p>
+                    <ul class="small text-muted ps-3 mb-0">
+                        <li class="mb-2"><strong>Complimentary Shipping:</strong> Orders above ₹2,999 ship free across India (flat ₹99 nominal courier fee below ₹2,999).</li>
+                        <li class="mb-2"><strong>Dispatch Window:</strong> Ready-to-ship ensembles dispatch within 24–48 business hours.</li>
+                        <li><strong>Estimated Transit:</strong> 2–4 days within Kerala and South India; 4–7 business days nationwide via insured BlueDart/DTDC partners.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Exchanges & Returns -->
+            <div class="col-lg-6">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="pf-step-number"><i class="fas fa-rotate-left"></i></span>
+                        <h2 class="serif-title h4 mb-0">Returns &amp; Size Exchanges</h2>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        We curate every saree and ethnic ensemble through strict multi-stage quality inspection prior to dispatch.
+                    </p>
+                    <ul class="small text-muted ps-3 mb-0">
+                        <li class="mb-2">Size exchanges or defect claims are accepted within <strong>7 days</strong> of delivery provided original tags, fall-pico condition, and packaging remain intact.</li>
+                        <li class="mb-2">Please share a 360-degree continuous unboxing video without pauses on WhatsApp within 24 hours in case of transit damage or missing accents.</li>
+                        <li>Custom-tailored or altered outfits are ineligible for return unless a craftsmanship flaw is present.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Silk Care & Privacy -->
+            <div class="col-lg-6">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <span class="pf-step-number"><i class="fas fa-shield-halved"></i></span>
+                        <h2 class="serif-title h4 mb-0">Silk Care &amp; Privacy Commitment</h2>
+                    </div>
+                    <p class="small text-muted mb-3">
+                        Handloom weaves deserve mindful care to retain their natural zari lustre across generations.
+                    </p>
+                    <ul class="small text-muted ps-3 mb-0">
+                        <li class="mb-2"><strong>Garment Care:</strong> Strictly dry clean pure Kanjeevaram, Banarasi, Chanderi, and embroidered organza silk creations. Store wrapped in unbleached muslin away from direct sunlight.</li>
+                        <li class="mb-2"><strong>Data Privacy:</strong> Your delivery address and phone number are used exclusively to process your PINACLE FASHIONS order and courier updates. We never sell or share client data.</li>
+                        <li>Questions? Reach our concierge at <a href="mailto:{{ SUPPORT_EMAIL }}" class="text-gold fw-semibold">{{ SUPPORT_EMAIL }}</a> or on <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener noreferrer" class="text-gold fw-semibold">WhatsApp</a>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="{% url 'store:shop' %}" class="btn btn-gold px-4">Continue Exploring Collections</a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

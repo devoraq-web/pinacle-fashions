@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Our Story &amp; Atelier Heritage | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container text-center">
+        <span class="eyebrow-text">Heritage Craft &amp; Modern Luxury</span>
+        <h1 class="serif-display fw-semibold mt-2 mb-3">The House of PINACLE FASHIONS</h1>
+        <div class="gold-flourish-divider mx-auto" style="max-width: 240px;"><span>&#10022;</span></div>
+        <p class="text-muted mx-auto mb-0" style="max-width: 620px;">
+            Celebrated ethnic couture woven with Indian artistry, timeless palettes, and deeply personal WhatsApp concierge styling.
+        </p>
+    </div>
+</section>
+
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        <div class="row g-5 align-items-center mb-5">
+            <div class="col-lg-5 text-center">
+                <div class="p-4 bg-white border rounded shadow-sm d-inline-block" style="border-color: var(--pf-gold-border) !important;">
+                    <img src="{% static 'images/pinacle-logo.jpg' %}" alt="Official PINACLE FASHIONS Crest" class="rounded-circle mb-3" style="width: 220px; height: 220px; object-fit: cover; border: 2px solid var(--pf-gold);">
+                    <div class="serif-title h5 mb-1">PINACLE FASHIONS</div>
+                    <div class="eyebrow-text">Est. with Passion in {{ STORE_LOCATION }}</div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <span class="eyebrow-text">Philosophy</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-3">Every Thread Tells a Story</h2>
+                <div class="pf-divider-gold"></div>
+                <p class="text-muted mb-3" style="line-height: 1.85;">
+                    Born out of a reverence for pure Indian handlooms and contemporary feminine elegance, <strong>PINACLE FASHIONS</strong> curates heirloom Kanjeevaram sarees, delicate chikankari kurtis, bridal salwar suits, and handcrafted ethnic treasures.
+                </p>
+                <p class="text-muted mb-4" style="line-height: 1.85;">
+                    We believe selecting an outfit for a milestone celebration deserves attentive warmth—not impersonal algorithms. That is why every order transitions seamlessly to our dedicated concierge at <strong>{{ WHATSAPP_DISPLAY_NUMBER }}</strong>, ensuring confident fit, transparent communication, and white-glove packaging inside each keepsake box.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'store:shop' %}" class="btn btn-gold">Explore Collections</a>
+                    <a href="{% url 'store:policies' %}" class="btn btn-gold-outline">Boutique Policies</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-5 align-items-center pt-4 border-top" style="border-color: var(--pf-border) !important;">
+            <div class="col-lg-6 order-lg-2">
+                <div class="p-3 bg-white border rounded shadow-sm" style="border-color: var(--pf-gold-border) !important;">
+                    <img src="{% static 'images/pinacle-thank-you.jpg' %}" alt="PINACLE FASHIONS Signature Thank You Keepsake Note" class="w-100 rounded" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <span class="eyebrow-text">White-Glove Presentation</span>
+                <h2 class="serif-title h2 fw-semibold mt-1 mb-3">A Keepsake Experience in Every Parcel</h2>
+                <div class="pf-divider-gold"></div>
+                <p class="text-muted mb-3" style="line-height: 1.85;">
+                    From the moment your parcel is dispatched, it carries our promise of gratitude—carefully steamed garments nestled in acid-free butter paper alongside our signature keepsake card.
+                </p>
+                <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%20PINACLE%20FASHIONS%2C%20I%20would%20like%20to%20connect%20with%20your%20stylist." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp-buy">
+                    <i class="fab fa-whatsapp fs-5"></i> Connect with Our Stylist
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-5 pt-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2" style="border-color: var(--pf-border) !important;">
+            <span class="small text-muted" style="font-size: 0.78rem; letter-spacing: 0.04em;">{{ BRAND_NAME }} &middot; {{ STORE_LOCATION }}</span>
+            <a href="{% url 'dashboard:login' %}" class="pf-about-admin-link text-decoration-none">Admin Login</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

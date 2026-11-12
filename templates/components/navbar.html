@@ -1,0 +1,134 @@
+{% load static %}
+<header class="pf-header" id="pfHeader">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between py-2 py-lg-0">
+            <!-- Mobile Hamburger Menu Trigger -->
+            <div class="d-flex align-items-center d-lg-none">
+                <button class="btn border-0 p-2 text-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuDrawer" aria-controls="mobileMenuDrawer" aria-label="Open navigation menu">
+                    <i class="fas fa-bars fs-5"></i>
+                </button>
+            </div>
+
+            <!-- Brand Logo & Wordmark (Left) -->
+            <a href="{% url 'store:home' %}" class="d-flex align-items-center gap-2 gap-md-3 py-1 text-decoration-none">
+                <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ BRAND_NAME }} Logo" class="pf-brand-logo">
+                <div>
+                    <span class="pf-brand-name">PINACLE</span>
+                    <span class="pf-brand-tagline">FASHIONS</span>
+                </div>
+            </a>
+
+            <!-- Desktop Primary Navigation (Center) -->
+            <nav class="d-none d-lg-flex align-items-center pf-header-nav" aria-label="Primary Navigation">
+                <a href="{% url 'store:home' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                <a href="{% url 'store:shop' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'shop' %}active{% endif %}">Shop</a>
+                {% for cat in nav_categories|slice:":2" %}
+                <a href="{{ cat.get_absolute_url }}" class="pf-nav-link {% if request.resolver_match.kwargs.slug == cat.slug %}active{% endif %}">{{ cat.name }}</a>
+                {% endfor %}
+
+                <div class="dropdown">
+                    <button type="button" class="pf-nav-link dropdown-toggle border-0 bg-transparent {% if request.resolver_match.url_name == 'categories' %}active{% endif %}" data-bs-toggle="dropdown" aria-expanded="false">
+                        Collections
+                    </button>
+                    <ul class="dropdown-menu border-0 shadow-lg py-2" style="background: var(--pf-ivory); border: 1px solid var(--pf-border) !important; min-width: 230px;">
+                        {% for cat in nav_categories %}
+                        <li>
+                            <a class="dropdown-item py-2 px-4 small fw-medium text-uppercase" style="letter-spacing: 0.08em;" href="{{ cat.get_absolute_url }}">
+                                {{ cat.name }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                        {% if nav_categories %}
+                        <li><hr class="dropdown-divider mx-3 my-1" style="border-color: var(--pf-border);"></li>
+                        {% endif %}
+                        <li>
+                            <a class="dropdown-item py-2 px-4 small fw-semibold text-gold" href="{% url 'store:categories' %}">
+                                All Categories <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item py-2 px-4 small fw-semibold" style="color: var(--pf-maroon);" href="{% url 'store:shop' %}?sale=1">
+                                Festive Sale Edit
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <a href="{% url 'store:new_arrivals' %}" class="pf-nav-link {% if request.resolver_match.url_name == 'new_arrivals' %}active{% endif %}">New Arrivals</a>
+            </nav>
+
+            <!-- Action Icons: Search, Wishlist, Shopping Cart (Right) -->
+            <div class="d-flex align-items-center gap-1 gap-sm-2">
+                <!-- Search Trigger -->
+                <button class="pf-header-action border-0 bg-transparent" type="button" data-bs-toggle="collapse" data-bs-target="#searchCollapseBar" aria-expanded="false" aria-controls="searchCollapseBar" title="Search Boutique" aria-label="Search boutique">
+                    <i class="fas fa-search"></i>
+                </button>
+
+                <!-- Wishlist Link -->
+                <a href="{% url 'store:wishlist' %}" class="pf-header-action" title="Wishlist" aria-label="Saved Wishlist">
+                    <i class="far fa-heart"></i>
+                    <span class="pf-badge-count {% if not wishlist_count %}d-none{% endif %}" id="header-wishlist-count">{{ wishlist_count|default:0 }}</span>
+                </a>
+
+                <!-- Shopping Bag Link -->
+                <a href="{% url 'store:cart' %}" class="pf-header-action" title="Shopping Cart" aria-label="Shopping Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="pf-badge-count pf-badge-count--cart" id="header-cart-count">{{ cart_count|default:0 }}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collapsible Search Bar -->
+    <div class="collapse border-top" id="searchCollapseBar" style="background-color: var(--pf-white); border-color: var(--pf-border) !important;">
+        <div class="container py-3">
+            <form action="{% url 'store:shop' %}" method="GET" class="d-flex align-items-center gap-2 mx-auto" style="max-width: 720px;">
+                <label for="headerSearchInput" class="visually-hidden">Search creations</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0" style="border-color: var(--pf-border);">
+                        <i class="fas fa-search text-gold"></i>
+                    </span>
+                    <input type="text" name="q" id="headerSearchInput" class="form-control border-start-0 py-2" placeholder="Search sarees, silk kurtis, lehengas, Kanjeevaram..." value="{{ request.GET.q|default:'' }}">
+                    <button type="submit" class="btn btn-gold px-4">Search</button>
+                </div>
+                <button type="button" class="btn-close ms-2" data-bs-toggle="collapse" data-bs-target="#searchCollapseBar" aria-label="Close search"></button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Editorial Offcanvas Drawer -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenuDrawer" aria-labelledby="mobileMenuLabel" style="background-color: var(--pf-ivory); max-width: 320px;">
+    <div class="offcanvas-header border-bottom" style="border-color: var(--pf-border) !important;">
+        <div class="d-flex align-items-center gap-2">
+            <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ BRAND_NAME }}" style="height: 38px; width: 38px; border-radius: 50%; border: 1px solid var(--pf-gold); object-fit: cover;">
+            <span class="serif-title fw-bold fs-5" id="mobileMenuLabel">PINACLE FASHIONS</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column justify-content-between p-0">
+        <div class="list-group list-group-flush">
+            <a href="{% url 'store:home' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">Home</a>
+            <a href="{% url 'store:shop' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">Shop All</a>
+            <a href="{% url 'store:new_arrivals' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">New Arrivals</a>
+            <a href="{% url 'store:categories' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">All Collections</a>
+
+            {% if nav_categories %}
+            <div class="px-4 pt-3 pb-1 text-uppercase text-muted" style="font-size: 0.68rem; letter-spacing: 0.2em;">Categories</div>
+            {% for cat in nav_categories %}
+            <a href="{{ cat.get_absolute_url }}" class="list-group-item list-group-item-action bg-transparent py-2 px-4 ps-5 small text-muted">{{ cat.name }}</a>
+            {% endfor %}
+            {% endif %}
+
+            <a href="{% url 'store:about' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">Brand Story</a>
+            <a href="{% url 'store:contact' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">Contact Atelier</a>
+            <a href="{% url 'store:policies' %}" class="list-group-item list-group-item-action bg-transparent py-3 px-4 fw-medium text-uppercase small" style="letter-spacing: 0.1em;">Policies &amp; Care</a>
+        </div>
+
+        <div class="p-4 border-top" style="border-color: var(--pf-border) !important; background: var(--pf-cream);">
+            <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%20PINACLE%20FASHIONS%2C%20I%20would%20like%20styling%20assistance." target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp-buy w-100 justify-content-center btn-sm">
+                <i class="fab fa-whatsapp fs-5"></i> WhatsApp Concierge
+            </a>
+        </div>
+    </div>
+</div>

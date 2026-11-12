@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Saved Wishlist | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container text-center">
+        <span class="eyebrow-text">Your Personal Edit</span>
+        <h1 class="serif-display fw-semibold mt-2 mb-2">Saved Wishlist</h1>
+        <p class="text-muted small mb-0">{{ wishlist_count }} creation{{ wishlist_count|pluralize }} saved for consideration</p>
+    </div>
+</section>
+
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        {% if products %}
+        <div class="pf-product-grid">
+            {% for product in products %}
+                {% include 'components/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="pf-checkout-card text-center py-5 mx-auto" style="max-width: 540px;">
+            <i class="far fa-heart text-gold fs-1 mb-3"></i>
+            <h2 class="serif-title h4 mb-2">Your Wishlist is Empty</h2>
+            <p class="small text-muted mb-4">Tap the heart icon on any saree, kurti, or bridal piece to curate your private shortlist.</p>
+            <a href="{% url 'store:shop' %}" class="btn btn-gold">Explore Collections</a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

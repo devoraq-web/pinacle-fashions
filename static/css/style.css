@@ -1,0 +1,1700 @@
+/* ==========================================================================
+   PINACLE FASHIONS – EDITORIAL LUXURY INDIAN FASHION DESIGN SYSTEM
+   Master Palette:
+     Warm Ivory:     #FAF7F1
+     Cream:          #F1E8DB
+     Champagne Gold: #C6A46A
+     Rose Gold:      #C99A91
+     Deep Black:     #171513
+     Pure White:     #FFFFFF
+   Typography: Cormorant Garamond / Playfair Display (Headings) & Jost (Body)
+   ========================================================================== */
+
+:root {
+  /* Core Brand Palette */
+  --pf-ivory: #FAF7F1;
+  --pf-cream: #F1E8DB;
+  --pf-cream-warm: #F6F0E6;
+  --pf-cream-dark: #E8DCCB;
+  --pf-gold: #C6A46A;
+  --pf-gold-dark: #A58347;
+  --pf-gold-light: #E2CCA2;
+  --pf-gold-border: rgba(198, 164, 106, 0.35);
+  --pf-gold-subtle: rgba(198, 164, 106, 0.14);
+  --pf-rose-gold: #C99A91;
+  --pf-black: #171513;
+  --pf-white: #FFFFFF;
+
+  /* Editorial Jewel & Text Neutrals (High WCAG Contrast) */
+  --pf-maroon: #6B1E2E;
+  --pf-burgundy: #4A1420;
+  --pf-text-main: #171513;
+  --pf-text-body: #474039;
+  --pf-text-muted: #72685F;
+  --pf-border: #E5D9C7;
+
+  /* Semantic States */
+  --pf-success: #256446;
+  --pf-danger: #9B2C2C;
+  --pf-whatsapp: #25D366;
+
+  /* Typography Families */
+  --pf-font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --pf-font-serif: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+  --pf-font-body: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --pf-font-accent: 'Italiana', 'Cormorant Garamond', serif;
+
+  /* Elevations & Motion */
+  --pf-radius-xs: 2px;
+  --pf-radius-sm: 4px;
+  --pf-radius-md: 8px;
+  --pf-shadow-soft: 0 6px 24px rgba(23, 21, 19, 0.05);
+  --pf-shadow-lift: 0 16px 40px rgba(23, 21, 19, 0.11);
+  --pf-shadow-gold: 0 10px 28px rgba(198, 164, 106, 0.22);
+  --pf-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --pf-transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ==========================================================================
+   BASE RESET & TYPOGRAPHY SCALE
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: clip;
+}
+
+body {
+  font-family: var(--pf-font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--pf-text-body);
+  background-color: var(--pf-ivory);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .serif-title, .serif-display {
+  font-family: var(--pf-font-display);
+  color: var(--pf-black);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+}
+
+.eyebrow-text {
+  font-family: var(--pf-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--pf-gold-dark);
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.script-accent {
+  font-family: var(--pf-font-display);
+  font-style: italic;
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: var(--pf-gold);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: var(--pf-transition);
+}
+
+a:hover {
+  color: var(--pf-gold-dark);
+}
+
+.text-gold {
+  color: var(--pf-gold-dark) !important;
+}
+
+.bg-gold-subtle {
+  background-color: var(--pf-gold-subtle) !important;
+}
+
+.pf-section-ivory {
+  background-color: var(--pf-ivory);
+}
+
+.pf-section-cream {
+  background-color: var(--pf-cream);
+}
+
+.pf-section-white {
+  background-color: var(--pf-white);
+}
+
+.pf-section-pad {
+  padding: 84px 0;
+}
+
+.pf-divider-gold {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pf-gold-border), var(--pf-gold), var(--pf-gold-border), transparent);
+  border: none;
+  margin: 0;
+}
+
+.gold-flourish-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin: 14px auto 20px;
+  max-width: 240px;
+  color: var(--pf-gold);
+  font-size: 0.9rem;
+}
+
+.gold-flourish-divider::before,
+.gold-flourish-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--pf-gold));
+}
+
+.gold-flourish-divider::after {
+  background: linear-gradient(270deg, transparent, var(--pf-gold));
+}
+
+/* ==========================================================================
+   LUXURY BUTTON SYSTEM
+   ========================================================================== */
+.btn-gold,
+.pf-btn-primary {
+  background-color: var(--pf-black);
+  color: var(--pf-white) !important;
+  border: 1px solid var(--pf-black);
+  border-radius: var(--pf-radius-xs);
+  padding: 13px 28px;
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: var(--pf-transition);
+}
+
+.btn-gold:hover,
+.pf-btn-primary:hover {
+  background-color: var(--pf-gold);
+  border-color: var(--pf-gold);
+  color: var(--pf-black) !important;
+  box-shadow: var(--pf-shadow-gold);
+  transform: translateY(-2px);
+}
+
+.btn-gold-sm,
+.btn-gold.btn-sm {
+  padding: 9px 14px;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+}
+
+.btn-gold-outline,
+.pf-btn-secondary {
+  background-color: transparent;
+  color: var(--pf-black) !important;
+  border: 1px solid var(--pf-gold);
+  border-radius: var(--pf-radius-xs);
+  padding: 12px 26px;
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: var(--pf-transition);
+}
+
+.btn-gold-outline:hover,
+.pf-btn-secondary:hover {
+  background-color: var(--pf-gold);
+  border-color: var(--pf-gold);
+  color: var(--pf-black) !important;
+  box-shadow: var(--pf-shadow-gold);
+  transform: translateY(-2px);
+}
+
+.btn-dark-pf {
+  background-color: var(--pf-black);
+  color: var(--pf-white) !important;
+  border: 1px solid var(--pf-black);
+  border-radius: var(--pf-radius-xs);
+  font-family: var(--pf-font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  transition: var(--pf-transition);
+}
+
+.btn-dark-pf:hover {
+  background-color: #2c2723;
+  color: var(--pf-gold-light) !important;
+  transform: translateY(-2px);
+}
+
+.btn-whatsapp-buy {
+  background-color: var(--pf-maroon);
+  color: var(--pf-white) !important;
+  border: 1px solid var(--pf-maroon);
+  border-radius: var(--pf-radius-xs);
+  padding: 13px 26px;
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--pf-transition);
+}
+
+.btn-whatsapp-buy:hover {
+  background-color: var(--pf-burgundy);
+  border-color: var(--pf-gold);
+  color: var(--pf-white) !important;
+  box-shadow: var(--pf-shadow-gold);
+  transform: translateY(-2px);
+}
+
+/* Floating WhatsApp Quick Action */
+.pf-float-whatsapp {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: #25D366;
+  color: #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.7rem;
+  box-shadow: 0 8px 26px rgba(37, 211, 102, 0.42);
+  z-index: 1030;
+  transition: transform 0.3s var(--pf-ease), box-shadow 0.3s ease;
+}
+
+.pf-float-whatsapp:hover {
+  transform: scale(1.08) translateY(-2px);
+  color: #FFFFFF;
+  box-shadow: 0 12px 32px rgba(37, 211, 102, 0.58);
+}
+
+/* ==========================================================================
+   A. SCROLLING ANNOUNCEMENT BAR
+   ========================================================================== */
+.pf-announcement-bar {
+  background-color: var(--pf-black);
+  color: var(--pf-ivory);
+  border-bottom: 1px solid rgba(198, 164, 106, 0.35);
+  padding: 9px 0;
+  font-family: var(--pf-font-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  overflow: hidden;
+  position: relative;
+}
+
+.pf-announcement-marquee {
+  display: flex;
+  width: max-content;
+  animation: pfMarqueeRTL 34s linear infinite;
+}
+
+.pf-announcement-bar:hover .pf-announcement-marquee,
+.pf-announcement-bar:focus-within .pf-announcement-marquee {
+  animation-play-state: paused;
+}
+
+.pf-announcement-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  padding-right: 28px;
+  white-space: nowrap;
+}
+
+.pf-announcement-dot {
+  color: var(--pf-gold);
+}
+
+/* ==========================================================================
+   B. STICKY EDITORIAL NAVIGATION HEADER
+   ========================================================================== */
+.pf-header {
+  background-color: rgba(250, 247, 241, 0.96);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--pf-border);
+  position: sticky;
+  top: 0;
+  z-index: 1040;
+  transition: background-color 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.pf-header.scrolled,
+.pf-header.pf-navbar--scrolled {
+  background-color: rgba(255, 255, 255, 0.98);
+  box-shadow: var(--pf-shadow-soft);
+  border-bottom-color: var(--pf-gold);
+}
+
+.pf-brand-logo {
+  height: 54px;
+  width: 54px;
+  border-radius: 50%;
+  border: 1.5px solid var(--pf-gold);
+  padding: 2px;
+  background: var(--pf-white);
+  object-fit: cover;
+  flex-shrink: 0;
+  transition: transform 0.35s var(--pf-ease);
+}
+
+.pf-brand-logo:hover {
+  transform: scale(1.05);
+}
+
+.pf-brand-name {
+  font-family: var(--pf-font-display);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--pf-black);
+  display: block;
+  line-height: 1.05;
+}
+
+.pf-brand-tagline {
+  font-family: var(--pf-font-body);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--pf-gold-dark);
+  display: block;
+  margin-top: 2px;
+}
+
+.pf-header-nav {
+  gap: 4px;
+}
+
+.pf-nav-link {
+  font-family: var(--pf-font-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--pf-black);
+  padding: 18px 11px !important;
+  position: relative;
+  display: inline-block;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.pf-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 11px;
+  left: 11px;
+  right: 11px;
+  height: 1.5px;
+  background: var(--pf-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s var(--pf-ease);
+}
+
+.pf-nav-link:hover::after,
+.pf-nav-link.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.pf-nav-link:hover,
+.pf-nav-link.active {
+  color: var(--pf-gold-dark) !important;
+}
+
+.pf-header-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--pf-black);
+  position: relative;
+  transition: var(--pf-transition);
+}
+
+.pf-header-action:hover {
+  background-color: var(--pf-cream);
+  color: var(--pf-black);
+}
+
+.pf-badge-count {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  background: var(--pf-black);
+  color: var(--pf-white);
+  font-family: var(--pf-font-body);
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 1.5px solid var(--pf-ivory);
+}
+
+.pf-badge-count--cart {
+  background: #B91C1C;
+  color: var(--pf-white);
+  min-width: 18px;
+  height: 18px;
+  box-shadow: 0 2px 6px rgba(185, 28, 28, 0.35);
+}
+
+/* ==========================================================================
+   C. HERO EDITORIAL CAROUSEL (4-SECOND AUTO-ADVANCE + LUXURY OVERLAY)
+   ========================================================================== */
+.pf-hero-carousel {
+  position: relative;
+  background-color: var(--pf-black);
+  overflow: hidden;
+}
+
+.pf-hero-slide {
+  position: relative;
+  min-height: clamp(490px, 78vh, 800px);
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.pf-hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  transform: scale(1.02);
+  transition: transform 6s ease-out;
+}
+
+.carousel-item.active .pf-hero-bg {
+  transform: scale(1.07);
+}
+
+.pf-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(23, 21, 19, 0.84) 0%,
+    rgba(23, 21, 19, 0.58) 48%,
+    rgba(23, 21, 19, 0.24) 100%
+  );
+  z-index: 1;
+}
+
+.pf-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+  padding: 64px 0;
+  color: var(--pf-white);
+}
+
+.pf-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--pf-gold-light);
+  margin-bottom: 16px;
+}
+
+.pf-hero-eyebrow::before {
+  content: '';
+  width: 28px;
+  height: 1px;
+  background-color: var(--pf-gold);
+}
+
+.pf-hero-title {
+  font-family: var(--pf-font-display);
+  font-size: clamp(2.4rem, 5.2vw, 4.6rem);
+  font-weight: 500;
+  line-height: 1.07;
+  letter-spacing: -0.02em;
+  color: var(--pf-white);
+  margin-bottom: 20px;
+}
+
+.pf-hero-desc {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(250, 247, 241, 0.88);
+  max-width: 520px;
+  margin-bottom: 30px;
+  font-weight: 300;
+}
+
+.pf-hero-cta-primary {
+  background-color: var(--pf-gold);
+  color: var(--pf-black) !important;
+  border: 1px solid var(--pf-gold);
+  border-radius: var(--pf-radius-xs);
+  padding: 14px 32px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--pf-transition);
+}
+
+.pf-hero-cta-primary:hover {
+  background-color: var(--pf-white);
+  border-color: var(--pf-white);
+  color: var(--pf-black) !important;
+  transform: translateY(-2px);
+}
+
+.pf-hero-cta-secondary {
+  background-color: rgba(23, 21, 19, 0.45);
+  backdrop-filter: blur(6px);
+  color: var(--pf-ivory) !important;
+  border: 1px solid rgba(250, 247, 241, 0.65);
+  border-radius: var(--pf-radius-xs);
+  padding: 14px 30px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--pf-transition);
+}
+
+.pf-hero-cta-secondary:hover {
+  background-color: var(--pf-ivory);
+  color: var(--pf-black) !important;
+  transform: translateY(-2px);
+}
+
+.pf-hero-carousel .carousel-indicators {
+  margin-bottom: 22px;
+  z-index: 4;
+}
+
+.pf-hero-carousel .carousel-control-prev,
+.pf-hero-carousel .carousel-control-next {
+  width: 44px;
+  height: 44px;
+  top: auto;
+  bottom: 20px;
+  background-color: rgba(23, 21, 19, 0.58);
+  border: 1px solid rgba(198, 164, 106, 0.55);
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  opacity: 0.88;
+  z-index: 5;
+  transition: var(--pf-transition);
+}
+
+.pf-hero-carousel .carousel-control-prev {
+  left: auto;
+  right: 80px;
+}
+
+.pf-hero-carousel .carousel-control-next {
+  right: 24px;
+}
+
+.pf-hero-carousel .carousel-control-prev:hover,
+.pf-hero-carousel .carousel-control-next:hover {
+  background-color: var(--pf-gold);
+  border-color: var(--pf-gold);
+  opacity: 1;
+}
+
+.pf-hero-carousel .carousel-control-prev-icon,
+.pf-hero-carousel .carousel-control-next-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.pf-hero-carousel .carousel-indicators [data-bs-target] {
+  width: 28px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: none;
+  margin: 0 5px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.pf-hero-carousel .carousel-indicators .active {
+  width: 48px;
+  background-color: var(--pf-gold);
+}
+
+/* ==========================================================================
+   D. INFINITE MOVING BRAND TAGLINE MARQUEE (PURE CSS)
+   ========================================================================== */
+.pf-tagline-marquee-band {
+  background-color: var(--pf-cream);
+  border-top: 1px solid var(--pf-gold-border);
+  border-bottom: 1px solid var(--pf-gold-border);
+  padding: 15px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.pf-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: pfMarqueeRTL 28s linear infinite;
+}
+
+.pf-tagline-marquee-band:hover .pf-marquee-track,
+.pf-tagline-marquee-band:focus-within .pf-marquee-track {
+  animation-play-state: paused;
+}
+
+.pf-marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  padding-right: 36px;
+  white-space: nowrap;
+  font-family: var(--pf-font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pf-black);
+}
+
+.pf-marquee-star {
+  color: var(--pf-gold-dark);
+  font-size: 0.85rem;
+}
+
+@keyframes pfMarqueeRTL {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+   E. SHOP BY CATEGORY GRID (INDEPENDENT REPRESENTATIVE IMAGERY)
+   ========================================================================== */
+.pf-category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.pf-category-card {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: var(--pf-radius-xs);
+  background-color: var(--pf-cream);
+  display: block;
+  box-shadow: var(--pf-shadow-soft);
+  transition: transform 0.45s var(--pf-ease), box-shadow 0.45s var(--pf-ease);
+}
+
+.pf-category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  transition: transform 0.85s var(--pf-ease);
+}
+
+.pf-category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--pf-shadow-lift);
+}
+
+.pf-category-card:hover img {
+  transform: scale(1.07);
+}
+
+.pf-category-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(23, 21, 19, 0.02) 45%, rgba(23, 21, 19, 0.86) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px 20px;
+  transition: var(--pf-transition);
+}
+
+.pf-category-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(198, 164, 106, 0);
+  pointer-events: none;
+  transition: border-color 0.4s ease;
+}
+
+.pf-category-card:hover .pf-category-overlay::after {
+  border-color: rgba(198, 164, 106, 0.72);
+}
+
+.pf-category-title {
+  font-family: var(--pf-font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--pf-white);
+  margin: 0 0 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.pf-category-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  padding: 6px 14px;
+  background: rgba(23, 21, 19, 0.55);
+  border: 1px solid rgba(220, 191, 140, 0.72);
+  color: var(--pf-gold-light);
+  font-family: var(--pf-font-body);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border-radius: var(--pf-radius-xs);
+  position: relative;
+  z-index: 1;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.pf-category-card:hover .pf-category-cta {
+  background-color: var(--pf-gold);
+  border-color: var(--pf-gold);
+  color: var(--pf-black);
+}
+
+.pf-category-count {
+  font-family: var(--pf-font-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--pf-gold-light);
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   F / G / H. RESPONSIVE PRODUCT GRID & UNIFORM LUXURY PRODUCT CARDS
+   Desktop: 4 col | Tablet: 3 col | Mobile: 2 col | Narrow (<359px): 1 col
+   ========================================================================== */
+.pf-product-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Shop page 3-column desktop grid beside filter sidebar */
+.pf-product-grid--shop {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pf-product-card {
+  background-color: var(--pf-white);
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-xs);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transition: transform 0.35s var(--pf-ease), box-shadow 0.35s var(--pf-ease), border-color 0.35s ease;
+}
+
+.pf-product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--pf-shadow-lift);
+  border-color: var(--pf-gold);
+}
+
+.pf-product-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--pf-cream);
+  flex-shrink: 0;
+}
+
+.pf-product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform 0.75s var(--pf-ease);
+}
+
+.pf-product-card:hover .pf-product-img {
+  transform: scale(1.06);
+}
+
+/* Badges */
+.pf-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 5px 10px;
+  font-family: var(--pf-font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: var(--pf-radius-xs);
+  z-index: 2;
+  line-height: 1;
+}
+
+.pf-badge-sale {
+  background-color: var(--pf-maroon);
+  color: var(--pf-white);
+}
+
+.pf-badge-new {
+  background-color: var(--pf-gold);
+  color: var(--pf-black);
+}
+
+.pf-badge-stockout {
+  background-color: rgba(23, 21, 19, 0.85);
+  color: var(--pf-white);
+}
+
+/* Floating Action Icons (Wishlist & Quick View) */
+.pf-card-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 3;
+}
+
+.pf-card-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(198, 164, 106, 0.35);
+  color: var(--pf-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: var(--pf-transition);
+}
+
+.pf-card-btn:hover {
+  background: var(--pf-black);
+  color: var(--pf-white);
+  border-color: var(--pf-black);
+  transform: scale(1.08);
+}
+
+.pf-card-btn.active {
+  background: var(--pf-white);
+  color: var(--pf-danger);
+}
+
+/* Card Body */
+.pf-product-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  background-color: var(--pf-white);
+}
+
+.pf-product-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pf-product-category {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pf-gold-dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pf-product-stock-pill {
+  font-size: 10.5px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.pf-stock-in {
+  color: var(--pf-success);
+}
+
+.pf-stock-low {
+  color: #B45309;
+}
+
+.pf-stock-out {
+  color: var(--pf-danger);
+}
+
+.pf-product-title {
+  font-family: var(--pf-font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--pf-black);
+  margin: 0 0 10px;
+  min-height: 2.6em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.pf-product-title a:hover {
+  color: var(--pf-gold-dark);
+}
+
+.pf-product-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pf-current-price {
+  font-family: var(--pf-font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--pf-black);
+}
+
+.pf-regular-price {
+  font-size: 0.85rem;
+  color: var(--pf-text-muted);
+  text-decoration: line-through;
+}
+
+.pf-discount-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--pf-maroon);
+  background: rgba(201, 154, 145, 0.22);
+  padding: 2px 6px;
+  border-radius: var(--pf-radius-xs);
+}
+
+.pf-card-bottom {
+  margin-top: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(229, 217, 199, 0.55);
+}
+
+/* ==========================================================================
+   J. HORIZONTAL CUSTOMER REVIEWS CAROUSEL
+   ========================================================================== */
+.pf-review-carousel-wrap {
+  position: relative;
+}
+
+.pf-review-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 8px 4px 18px;
+  scrollbar-width: none;
+}
+
+.pf-review-track::-webkit-scrollbar {
+  display: none;
+}
+
+.pf-review-card {
+  flex: 0 0 calc((100% - 48px) / 3);
+  scroll-snap-align: start;
+  background-color: var(--pf-white);
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-sm);
+  padding: 28px;
+  box-shadow: var(--pf-shadow-soft);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--pf-transition);
+}
+
+.pf-review-card:hover {
+  border-color: var(--pf-gold);
+  transform: translateY(-4px);
+}
+
+.pf-carousel-nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--pf-white);
+  border: 1px solid var(--pf-gold);
+  color: var(--pf-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--pf-transition);
+}
+
+.pf-carousel-nav-btn:hover {
+  background: var(--pf-black);
+  border-color: var(--pf-black);
+  color: var(--pf-gold);
+}
+
+/* ==========================================================================
+   K. INSTAGRAM EDITORIAL LOOKBOOK GRID
+   ========================================================================== */
+.pf-insta-item {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border-radius: var(--pf-radius-xs);
+  border: 1px solid var(--pf-border);
+  background: var(--pf-cream);
+}
+
+.pf-insta-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--pf-ease);
+}
+
+.pf-insta-item:hover img {
+  transform: scale(1.08);
+}
+
+.pf-insta-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 21, 19, 0.5);
+  color: var(--pf-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 1.8rem;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.pf-insta-item:hover .pf-insta-overlay {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   PRODUCT DETAIL PAGE (ZOOM GALLERY, PILL SELECTORS, STEPPER, SPECS)
+   ========================================================================== */
+.pf-gallery-main {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  background-color: var(--pf-white);
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-sm);
+  overflow: hidden;
+  cursor: zoom-in;
+}
+
+.pf-gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease-out;
+  transform-origin: center center;
+}
+
+.pf-gallery-main.is-zoomed img {
+  transform: scale(1.75);
+  cursor: zoom-out;
+}
+
+.pf-gallery-thumbs {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.pf-thumb-item {
+  width: 78px;
+  height: 98px;
+  border-radius: var(--pf-radius-xs);
+  border: 2px solid transparent;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: var(--pf-cream);
+  transition: border-color 0.25s ease;
+}
+
+.pf-thumb-item.active,
+.pf-thumb-item:hover {
+  border-color: var(--pf-gold);
+}
+
+.pf-thumb-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pf-selector-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pf-black);
+  margin-bottom: 10px;
+}
+
+.pf-option-pill {
+  position: relative;
+  cursor: pointer;
+  margin: 0;
+}
+
+.pf-option-pill input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.pf-option-pill span {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid var(--pf-border);
+  background: var(--pf-white);
+  border-radius: var(--pf-radius-xs);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--pf-black);
+  transition: var(--pf-transition);
+}
+
+.pf-option-pill input:checked + span {
+  background: var(--pf-black);
+  border-color: var(--pf-black);
+  color: var(--pf-white);
+}
+
+.pf-option-pill input:focus-visible + span {
+  outline: 2px solid var(--pf-gold);
+  outline-offset: 2px;
+}
+
+.pf-qty-group {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-xs);
+  background: var(--pf-white);
+}
+
+.pf-qty-btn {
+  width: 38px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: var(--pf-black);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pf-qty-btn:hover {
+  background: var(--pf-cream);
+}
+
+.pf-qty-input {
+  width: 48px;
+  height: 40px;
+  border: none;
+  text-align: center;
+  font-weight: 600;
+  color: var(--pf-black);
+  background: transparent;
+}
+
+.pf-spec-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pf-spec-table th,
+.pf-spec-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--pf-cream);
+  font-size: 0.9rem;
+}
+
+.pf-spec-table th {
+  width: 38%;
+  color: var(--pf-black);
+  font-weight: 600;
+}
+
+.pf-spec-table td {
+  color: var(--pf-text-body);
+}
+
+/* ==========================================================================
+   CHECKOUT & ORDER SUMMARY CARDS
+   ========================================================================== */
+.pf-checkout-card {
+  background: var(--pf-white);
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-sm);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--pf-shadow-soft);
+}
+
+.pf-summary-box {
+  background: var(--pf-white);
+  border: 1px solid var(--pf-gold-border);
+  border-radius: var(--pf-radius-sm);
+  padding: 28px;
+  box-shadow: var(--pf-shadow-soft);
+  position: sticky;
+  top: 96px;
+}
+
+.pf-step-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--pf-font-display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--pf-black);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--pf-cream);
+}
+
+.pf-step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--pf-black);
+  color: var(--pf-gold-light);
+  font-family: var(--pf-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-control, .form-select {
+  border: 1px solid var(--pf-border);
+  border-radius: var(--pf-radius-xs);
+  color: var(--pf-black);
+  font-size: 0.95rem;
+  padding: 10px 14px;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--pf-gold);
+  box-shadow: 0 0 0 3px rgba(198, 164, 106, 0.18);
+}
+
+/* ==========================================================================
+   L. EDITORIAL LUXURY FOOTER
+   ========================================================================== */
+.pf-footer {
+  background-color: var(--pf-black);
+  color: #D2C8BC;
+  border-top: 2px solid var(--pf-gold);
+  padding: 76px 0 28px;
+  font-family: var(--pf-font-body);
+}
+
+.pf-footer h5 {
+  font-family: var(--pf-font-display);
+  font-size: 1.3rem;
+  color: var(--pf-ivory);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  position: relative;
+}
+
+.pf-footer h5::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 36px;
+  height: 1px;
+  background: var(--pf-gold);
+}
+
+.pf-footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pf-footer-links li {
+  margin-bottom: 10px;
+}
+
+.pf-footer-links a {
+  color: #BFB5A8;
+  font-size: 0.9rem;
+  transition: color 0.25s ease, padding-left 0.25s ease;
+}
+
+.pf-footer-links a:hover {
+  color: var(--pf-gold-light);
+  padding-left: 5px;
+}
+
+.pf-footer-bottom {
+  border-top: 1px solid rgba(198, 164, 106, 0.2);
+  padding-top: 24px;
+  margin-top: 40px;
+  font-size: 0.85rem;
+  color: #ACA194;
+}
+
+.pf-footer-subtle-link {
+  color: #CFC5B9;
+  transition: color 0.25s ease;
+}
+
+.pf-footer-subtle-link:hover {
+  color: var(--pf-gold-light);
+}
+
+.pf-footer-admin-link {
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: #ACA194;
+  transition: color 0.25s ease;
+}
+
+.pf-footer-admin-link:hover {
+  color: var(--pf-gold-light);
+}
+
+.pf-footer-credit {
+  margin-top: 16px;
+  padding: 14px 16px 0;
+  border-top: 1px solid rgba(198, 164, 106, 0.14);
+}
+
+.pf-footer-credit-text {
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #ACA194;
+  line-height: 1.6;
+}
+
+.pf-footer-devoraq-link {
+  color: #B794F4;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(183, 148, 244, 0.35);
+  padding-bottom: 1px;
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.pf-footer-devoraq-link:hover,
+.pf-footer-devoraq-link:focus-visible {
+  color: #D6BCFA;
+  border-bottom-color: rgba(214, 188, 250, 0.8);
+}
+
+.pf-about-admin-link {
+  font-family: var(--pf-font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--pf-text-muted);
+  transition: color 0.25s ease;
+}
+
+.pf-about-admin-link:hover {
+  color: var(--pf-gold-dark);
+}
+
+/* ==========================================================================
+   M. ORDER SUCCESS HERO ALIGNMENT
+   ========================================================================== */
+.pf-order-success-hero {
+  border-color: var(--pf-gold-border) !important;
+}
+
+.pf-order-success-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+}
+
+.pf-order-success-badge {
+  width: 84px;
+  height: 84px;
+  border: 3px solid var(--pf-white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pf-order-success-hero .eyebrow-text {
+  display: block;
+  margin-bottom: 0.65rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 575.98px) {
+  .pf-order-success-badge {
+    width: 72px;
+    height: 72px;
+    font-size: 0.9rem;
+  }
+  .pf-order-success-hero .eyebrow-text {
+    letter-spacing: 0.2em;
+  }
+  .pf-order-success-hero .btn-whatsapp-buy {
+    width: 100%;
+    white-space: normal;
+  }
+}
+
+/* ==========================================================================
+   SCROLL-TRIGGERED REVEAL ANIMATIONS (IntersectionObserver)
+   ========================================================================== */
+.pf-reveal {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s var(--pf-ease), transform 0.7s var(--pf-ease);
+}
+
+.js-reveal-enabled .pf-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.js-reveal-enabled .pf-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   RESPONSIVE VIEWPORT MATRIX (320px TO 1920px)
+   ========================================================================== */
+@media (max-width: 1199.98px) {
+  .pf-product-grid,
+  .pf-product-grid--shop {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .pf-category-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .pf-review-card {
+    flex: 0 0 calc((100% - 24px) / 2);
+  }
+}
+
+@media (max-width: 991.98px) {
+  .pf-section-pad {
+    padding: 64px 0;
+  }
+  .pf-hero-slide {
+    min-height: 520px;
+  }
+  .pf-hero-scrim {
+    background: linear-gradient(180deg, rgba(23, 21, 19, 0.45) 0%, rgba(23, 21, 19, 0.85) 100%);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .pf-product-grid,
+  .pf-product-grid--shop {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .pf-category-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .pf-product-body {
+    padding: 12px;
+  }
+  .pf-product-title {
+    font-size: 1.02rem;
+  }
+  .pf-card-bottom {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .pf-review-card {
+    flex: 0 0 88%;
+    padding: 22px;
+  }
+  .pf-hero-content {
+    padding: 48px 0;
+    text-align: center;
+  }
+  .pf-hero-eyebrow {
+    justify-content: center;
+  }
+  .pf-hero-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Very narrow viewports (e.g. 320px width) switch product grid to 1 clean column */
+@media (max-width: 355px) {
+  .pf-product-grid,
+  .pf-product-grid--shop {
+    grid-template-columns: 1fr;
+  }
+  .pf-brand-logo {
+    height: 40px;
+    width: 40px;
+  }
+  .pf-brand-name {
+    font-size: 1.15rem;
+  }
+  .pf-header-action {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* Accessibility: Focus states & Reduced Motion */
+:focus-visible {
+  outline: 2px solid var(--pf-gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .pf-marquee-track,
+  .pf-announcement-marquee {
+    animation: none !important;
+  }
+}

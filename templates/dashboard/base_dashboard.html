@@ -1,0 +1,162 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PINACLE FASHIONS – Admin Dashboard{% endblock %}</title>
+    
+    <link rel="icon" type="image/jpeg" href="{% static 'images/pinacle-logo.jpg' %}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Admin Dashboard Styles -->
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="dashboard-body">
+
+    <!-- Sidebar Navigation -->
+    <aside class="dash-sidebar" id="dashSidebar">
+        <!-- Brand Header -->
+        <div class="dash-brand">
+            <img src="{% static 'images/pinacle-logo.jpg' %}" alt="PINACLE FASHIONS Logo" class="dash-brand-logo">
+            <div>
+                <h6 class="dash-brand-title">PINACLE FASHIONS</h6>
+                <p class="dash-brand-subtitle">Executive Portal</p>
+            </div>
+        </div>
+
+        <!-- Menu Items -->
+        <ul class="dash-menu">
+            <li class="dash-menu-header">Overview</li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:overview' %}" class="dash-menu-link {% if request.resolver_match.url_name == 'overview' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </li>
+
+            <li class="dash-menu-header">Catalog & Products</li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:product_list' %}" class="dash-menu-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}">
+                    <i class="fas fa-tshirt"></i> Products
+                </a>
+            </li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:product_create' %}" class="dash-menu-link {% if request.resolver_match.url_name == 'product_create' %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i> Add New Product
+                </a>
+            </li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:category_list' %}" class="dash-menu-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-layer-group"></i> Categories
+                </a>
+            </li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:inventory' %}" class="dash-menu-link {% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">
+                    <i class="fas fa-boxes"></i> Inventory Stock
+                </a>
+            </li>
+
+            <li class="dash-menu-header">Orders & Sales</li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:order_list' %}" class="dash-menu-link {% if 'order' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fab fa-whatsapp"></i> Customer Orders
+                </a>
+            </li>
+
+            <li class="dash-menu-header">Merchandising & Security</li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:banner_list' %}" class="dash-menu-link {% if 'banner' in request.resolver_match.url_name %}active{% endif %}">
+                    <i class="fas fa-images"></i> Hero Banners
+                </a>
+            </li>
+            <li class="dash-menu-item">
+                <a href="{% url 'dashboard:audit_logs' %}" class="dash-menu-link {% if request.resolver_match.url_name == 'audit_logs' %}active{% endif %}">
+                    <i class="fas fa-shield-alt"></i> Security Audit Log
+                </a>
+            </li>
+
+            <li class="dash-menu-header">Shortcuts</li>
+            <li class="dash-menu-item">
+                <a href="{% url 'store:home' %}" target="_blank" class="dash-menu-link text-warning">
+                    <i class="fas fa-external-link-alt"></i> View Live Store
+                </a>
+            </li>
+            <li class="dash-menu-item">
+                <a href="/admin/" target="_blank" class="dash-menu-link">
+                    <i class="fas fa-cog"></i> Django Admin
+                </a>
+            </li>
+        </ul>
+
+        <!-- User Profile & Logout -->
+        <div class="dash-user-footer">
+            <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-user-shield text-warning"></i>
+                <div class="small text-truncate" style="max-width: 130px;">
+                    <strong class="text-white">{{ request.user.username }}</strong>
+                </div>
+            </div>
+            <form action="{% url 'dashboard:logout' %}" method="POST" class="m-0">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="dash-main">
+        <!-- Top Header Bar -->
+        <header class="dash-topbar">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-sm btn-outline-dark d-lg-none" type="button" onclick="document.getElementById('dashSidebar').classList.toggle('open');">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h5 class="serif-title mb-0 d-none d-sm-block">{% block page_title %}Management Portal{% endblock %}</h5>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="{% url 'dashboard:product_create' %}" class="btn btn-sm btn-gold">
+                    <i class="fas fa-plus me-1"></i> Add Product
+                </a>
+                <a href="{% url 'store:home' %}" target="_blank" class="btn btn-sm btn-outline-dark">
+                    <i class="fas fa-store me-1"></i> Live Store
+                </a>
+            </div>
+        </header>
+
+        <!-- Dynamic Body Content -->
+        <div class="dash-content">
+            <!-- Messages / Toasts -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

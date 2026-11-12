@@ -1,0 +1,494 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}PINACLE FASHIONS – Luxury Indian Ethnic Couture &amp; Designer Wear{% endblock %}
+
+{% block content %}
+<!-- =========================================================
+     C. HERO EDITORIAL CAROUSEL (4s AUTO-SLIDE)
+     ========================================================= -->
+<section class="pf-hero-carousel" aria-label="Featured Collections">
+    <div id="pfHeroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="hover">
+        {% if hero_banners %}
+        <div class="carousel-indicators">
+            {% for banner in hero_banners %}
+            <button type="button" data-bs-target="#pfHeroCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" {% if forloop.first %}aria-current="true"{% endif %} aria-label="Slide {{ forloop.counter }}"></button>
+            {% endfor %}
+        </div>
+        <div class="carousel-inner">
+            {% for banner in hero_banners %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="pf-hero-slide">
+                    <img src="{{ banner.image.url }}"
+                         alt="{{ banner.title }}"
+                         class="pf-hero-bg"
+                         {% if forloop.first %}fetchpriority="high"{% else %}loading="lazy"{% endif %}
+                         decoding="async">
+                    <div class="pf-hero-scrim"></div>
+                    <div class="container">
+                        <div class="pf-hero-content">
+                            <span class="pf-hero-eyebrow">{{ banner.eyebrow }}</span>
+                            {% if forloop.first %}
+                            <h1 class="pf-hero-title">{{ banner.title }}</h1>
+                            {% else %}
+                            <h2 class="pf-hero-title">{{ banner.title }}</h2>
+                            {% endif %}
+                            {% if banner.subtitle %}
+                            <p class="pf-hero-desc">{{ banner.subtitle }}</p>
+                            {% endif %}
+                            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                                <a href="{{ banner.cta_primary_url|default:'/shop/' }}" class="pf-hero-cta-primary">
+                                    {{ banner.cta_primary_text|default:'Explore Collections' }} <i class="fas fa-arrow-right"></i>
+                                </a>
+                                {% if banner.cta_secondary_text %}
+                                <a href="{{ banner.cta_secondary_url|default:'/new-arrivals/' }}" class="pf-hero-cta-secondary">
+                                    {{ banner.cta_secondary_text }}
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Default Luxury Editorial Carousel -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#pfHeroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Royal Kanjeevaram Edit"></button>
+            <button type="button" data-bs-target="#pfHeroCarousel" data-bs-slide-to="1" aria-label="Ivory Rose Gold Couture"></button>
+            <button type="button" data-bs-target="#pfHeroCarousel" data-bs-slide-to="2" aria-label="Bridal Trousseau Curations"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="pf-hero-slide">
+                    <img src="{% static 'images/hero/hero-slide-1.jpg' %}" alt="Royal Kanjeevaram Pure Silk Sarees by PINACLE FASHIONS" class="pf-hero-bg" fetchpriority="high" decoding="async">
+                    <div class="pf-hero-scrim"></div>
+                    <div class="container">
+                        <div class="pf-hero-content">
+                            <span class="pf-hero-eyebrow">Heritage Weaves 2026</span>
+                            <h1 class="pf-hero-title">Timeless Indian Grace, Handwoven in Pure Silk</h1>
+                            <p class="pf-hero-desc">Discover heirloom Kanjeevaram sarees, artisanal zari borders, and bespoke designer couture crafted for life's finest celebrations.</p>
+                            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                                <a href="{% url 'store:shop' %}" class="pf-hero-cta-primary">Explore Collections <i class="fas fa-arrow-right"></i></a>
+                                <a href="{% url 'store:categories' %}" class="pf-hero-cta-secondary">Browse Categories</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="pf-hero-slide">
+                    <img src="{% static 'images/hero/hero-slide-2.jpg' %}" alt="Ivory &amp; Rose-Gold Designer Suits &amp; Kurtis" class="pf-hero-bg" loading="lazy" decoding="async">
+                    <div class="pf-hero-scrim"></div>
+                    <div class="container">
+                        <div class="pf-hero-content">
+                            <span class="pf-hero-eyebrow">Effortless Couture</span>
+                            <h2 class="pf-hero-title">Refined Ivory Silks &amp; Artisanal Chikankari</h2>
+                            <p class="pf-hero-desc">From luminous embroidered Anarkalis to whisper-light organza drapes, elevate every gathering with quiet, unforgettable luxury.</p>
+                            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                                <a href="{% url 'store:new_arrivals' %}" class="pf-hero-cta-primary">Shop New Arrivals <i class="fas fa-arrow-right"></i></a>
+                                <a href="{% url 'store:shop' %}?sale=1" class="pf-hero-cta-secondary">Festive Offers</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="pf-hero-slide">
+                    <img src="{% static 'images/hero/hero-slide-3.jpg' %}" alt="Bridal Lehengas &amp; Heirloom Jewellery" class="pf-hero-bg" loading="lazy" decoding="async">
+                    <div class="pf-hero-scrim"></div>
+                    <div class="container">
+                        <div class="pf-hero-content">
+                            <span class="pf-hero-eyebrow">Bridal &amp; Festive Edit</span>
+                            <h2 class="pf-hero-title">Curated Trousseau Silks &amp; Personal Concierge</h2>
+                            <p class="pf-hero-desc">Order effortlessly via direct WhatsApp concierge with dedicated styling support, custom size guidance, and insured Pan-India dispatch.</p>
+                            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-md-start">
+                                <a href="{% url 'store:categories' %}" class="pf-hero-cta-primary">Browse Categories <i class="fas fa-arrow-right"></i></a>
+                                <a href="https://wa.me/{{ WHATSAPP_NUMBER }}?text=Hello%20PINACLE%20FASHIONS%2C%20I%20would%20love%20bridal%20or%20festive%20styling%20suggestions." target="_blank" rel="noopener noreferrer" class="pf-hero-cta-secondary"><i class="fab fa-whatsapp"></i> WhatsApp Stylist</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <button class="carousel-control-prev d-none d-md-flex" type="button" data-bs-target="#pfHeroCarousel" data-bs-slide="prev" aria-label="Previous hero slide">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next d-none d-md-flex" type="button" data-bs-target="#pfHeroCarousel" data-bs-slide="next" aria-label="Next hero slide">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
+</section>
+
+<!-- =========================================================
+     D. INFINITE MOVING BRAND TAGLINE MARQUEE (CSS-ONLY RTL)
+     ========================================================= -->
+<div class="pf-tagline-marquee-band" role="region" aria-label="Brand Philosophy Marquee">
+    <div class="pf-marquee-track">
+        <div class="pf-marquee-content">
+            <span>Every Thread Tells a Story</span>
+            <span class="pf-marquee-star" aria-hidden="true">&#10022;</span>
+            <span>Elegance in Every Detail</span>
+            <span class="pf-marquee-star" aria-hidden="true">&#10022;</span>
+            <span>Celebrate Your Style</span>
+            <span class="pf-marquee-star" aria-hidden="true">&#10022;</span>
+            <span>Pinacle Fashions</span>
+            <span class="pf-marquee-star" aria-hidden="true">&#10022;</span>
+        </div>
+        <div class="pf-marquee-content" aria-hidden="true">
+            <span>Every Thread Tells a Story</span>
+            <span class="pf-marquee-star">&#10022;</span>
+            <span>Elegance in Every Detail</span>
+            <span class="pf-marquee-star">&#10022;</span>
+            <span>Celebrate Your Style</span>
+            <span class="pf-marquee-star">&#10022;</span>
+            <span>Pinacle Fashions</span>
+            <span class="pf-marquee-star">&#10022;</span>
+        </div>
+    </div>
+</div>
+
+<!-- =========================================================
+     E. SHOP BY CATEGORY (INDEPENDENT EDITORIAL COVERS)
+     ========================================================= -->
+{% if featured_categories %}
+<section class="pf-section-ivory pf-section-pad pf-reveal">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">Curated Silhouettes</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">Shop by Category</h2>
+            </div>
+            <a href="{% url 'store:categories' %}" class="btn btn-gold-outline btn-sm align-self-start align-self-md-end">
+                Explore All Categories <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="pf-category-grid">
+            {% for cat in featured_categories %}
+            <a href="{{ cat.get_absolute_url }}" class="pf-category-card">
+                {% if cat.image %}
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }} collection" loading="lazy" decoding="async">
+                {% else %}
+                <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ cat.name }}" loading="lazy" decoding="async">
+                {% endif %}
+                <div class="pf-category-overlay">
+                    <h3 class="pf-category-title">{{ cat.name }}</h3>
+                    <span class="pf-category-cta">Shop Now <i class="fas fa-arrow-right ms-1"></i></span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =========================================================
+     F. LATEST ATELIER CREATIONS
+     ========================================================= -->
+{% if latest_products %}
+<section class="pf-section-cream pf-section-pad pf-reveal border-top border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">Fresh From The Loom</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">Latest Products</h2>
+            </div>
+            <a href="{% url 'store:shop' %}?sort=newest" class="btn btn-gold-outline btn-sm align-self-start align-self-md-end">
+                View All Creations <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="pf-product-grid">
+            {% for product in latest_products %}
+                {% include 'components/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =========================================================
+     G. BEST SELLERS
+     ========================================================= -->
+{% if best_sellers %}
+<section class="pf-section-white pf-section-pad pf-reveal">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">Patron Favorites</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">Signature Best Sellers</h2>
+            </div>
+            <a href="{% url 'store:shop' %}?sort=featured" class="btn btn-gold-outline btn-sm align-self-start align-self-md-end">
+                Shop Best Sellers <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="pf-product-grid">
+            {% for product in best_sellers %}
+                {% include 'components/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =========================================================
+     H. NEW ARRIVALS EDIT
+     ========================================================= -->
+{% if new_arrivals %}
+<section class="pf-section-cream pf-section-pad pf-reveal border-top border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">2026 Capsule Drops</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">New Arrivals</h2>
+            </div>
+            <a href="{% url 'store:new_arrivals' %}" class="btn btn-gold-outline btn-sm align-self-start align-self-md-end">
+                Discover New Drops <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="pf-product-grid">
+            {% for product in new_arrivals %}
+                {% include 'components/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =========================================================
+     I. BRAND STORY & BESPOKE PROMISE
+     ========================================================= -->
+<section class="pf-section-ivory pf-section-pad pf-reveal">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <div class="p-3 bg-white border rounded shadow-sm" style="border-color: var(--pf-gold-border) !important;">
+                    <img src="{% static 'images/pinacle-thank-you.jpg' %}" alt="Every PINACLE FASHIONS garment arrives with our signature keepsake card" class="w-100 rounded" style="object-fit: cover;" loading="lazy" decoding="async">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <span class="eyebrow-text">The House of PINACLE</span>
+                <h2 class="serif-display display-5 fw-semibold mt-2 mb-3">A Personal Atelier Experience, Delivered to Your Doorstep</h2>
+                <div class="pf-divider-gold"></div>
+                <p class="text-muted mb-3" style="line-height: 1.85;">
+                    At <strong>PINACLE FASHIONS</strong>, every creation is chosen with an eye for heritage craft—handwoven temple-border Kanjeevarams, luminous Chanderi silk kurtis, and festive ensembles finished with pure zari detail.
+                </p>
+                <p class="text-muted mb-4" style="line-height: 1.85;">
+                    We skip impersonal automated payment portals in favour of human warmth: checkout creates your instant boutique reservation and opens your direct concierge conversation on WhatsApp for real-time sizing advice and tracked delivery.
+                </p>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-4">
+                        <div class="p-3 bg-white border text-center rounded" style="border-color: var(--pf-border) !important;">
+                            <i class="fas fa-award text-gold fs-4 mb-2"></i>
+                            <div class="small fw-semibold">Authentic Weaves</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="p-3 bg-white border text-center rounded" style="border-color: var(--pf-border) !important;">
+                            <i class="fab fa-whatsapp text-gold fs-4 mb-2"></i>
+                            <div class="small fw-semibold">Stylist Concierge</div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="p-3 bg-white border text-center rounded" style="border-color: var(--pf-border) !important;">
+                            <i class="fas fa-box-open text-gold fs-4 mb-2"></i>
+                            <div class="small fw-semibold">Keepsake Gift Box</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'store:about' %}" class="btn btn-gold">Read Our Story</a>
+                    <a href="{% url 'store:policies' %}" class="btn btn-gold-outline">Shipping &amp; Care Guide</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if sale_products %}
+<!-- =========================================================
+     FESTIVE PRIVILEGES (SPECIAL OFFERS)
+     ========================================================= -->
+<section class="pf-section-white pf-section-pad pf-reveal border-top" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">Limited-Time Privileges</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">Festive Offers Edit</h2>
+            </div>
+            <a href="{% url 'store:shop' %}?sale=1" class="btn btn-gold-outline btn-sm align-self-start align-self-md-end">
+                Explore All Offers <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="pf-product-grid">
+            {% for product in sale_products|slice:":4" %}
+                {% include 'components/product_card.html' with product=product %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- =========================================================
+     J. HORIZONTAL CUSTOMER REVIEWS CAROUSEL
+     ========================================================= -->
+<section class="pf-section-cream pf-section-pad pf-reveal border-top border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end mb-4 mb-md-5 gap-3">
+            <div>
+                <span class="eyebrow-text">Loved Across India</span>
+                <h2 class="serif-title display-6 fw-semibold mt-1 mb-0">Client Chronicles &amp; Reviews</h2>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button type="button" class="pf-carousel-nav-btn" id="reviewPrevBtn" aria-label="Previous customer reviews">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button type="button" class="pf-carousel-nav-btn" id="reviewNextBtn" aria-label="Next customer reviews">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="pf-review-carousel-wrap">
+            <div class="pf-review-track" id="pfReviewTrack" tabindex="0" aria-label="Customer testimonials">
+                {% for rev in approved_reviews %}
+                <article class="pf-review-card">
+                    <div>
+                        <div class="text-gold mb-3" aria-label="{{ rev.rating }} out of 5 stars">
+                            {% for _ in rev.stars_range %}<i class="fas fa-star small"></i>{% endfor %}
+                            {% for _ in rev.empty_stars_range %}<i class="far fa-star small"></i>{% endfor %}
+                        </div>
+                        <p class="mb-4 text-dark" style="line-height: 1.75; font-style: italic;">"{{ rev.review_text }}"</p>
+                    </div>
+                    <div class="pt-3 border-top d-flex justify-content-between align-items-center" style="border-color: var(--pf-cream) !important;">
+                        <div>
+                            <div class="fw-semibold small text-dark">{{ rev.customer_name }}</div>
+                            <div class="text-gold" style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;">Verified Patron</div>
+                        </div>
+                        <a href="{{ rev.product.get_absolute_url }}" class="small text-muted text-decoration-underline">{{ rev.product.name|truncatewords:3 }}</a>
+                    </div>
+                </article>
+                {% endfor %}
+
+                <article class="pf-review-card">
+                    <div>
+                        <div class="text-gold mb-3" aria-label="5 out of 5 stars">
+                            <i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i>
+                        </div>
+                        <p class="mb-4 text-dark" style="line-height: 1.75; font-style: italic;">"The Kanjeevaram silk lustre is breathtaking in person. Ordering through WhatsApp was effortless—they shared live drape photos before dispatch!"</p>
+                    </div>
+                    <div class="pt-3 border-top" style="border-color: var(--pf-cream) !important;">
+                        <div class="fw-semibold small text-dark">Meera Nambiar</div>
+                        <div class="text-gold" style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;">Kochi, Kerala</div>
+                    </div>
+                </article>
+
+                <article class="pf-review-card">
+                    <div>
+                        <div class="text-gold mb-3" aria-label="5 out of 5 stars">
+                            <i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i>
+                        </div>
+                        <p class="mb-4 text-dark" style="line-height: 1.75; font-style: italic;">"Arrived wrapped in cream tissue with the sweetest thank-you card. The chikankari kurti fabric feels airy yet undeniably festive."</p>
+                    </div>
+                    <div class="pt-3 border-top" style="border-color: var(--pf-cream) !important;">
+                        <div class="fw-semibold small text-dark">Ananya Krishnan</div>
+                        <div class="text-gold" style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;">Bengaluru, Karnataka</div>
+                    </div>
+                </article>
+
+                <article class="pf-review-card">
+                    <div>
+                        <div class="text-gold mb-3" aria-label="5 out of 5 stars">
+                            <i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i>
+                        </div>
+                        <p class="mb-4 text-dark" style="line-height: 1.75; font-style: italic;">"Picked two Banarasi drapes for my sister's engagement. Zero confusion with sizing and lightning-fast dispatch."</p>
+                    </div>
+                    <div class="pt-3 border-top" style="border-color: var(--pf-cream) !important;">
+                        <div class="fw-semibold small text-dark">Divya Subramanian</div>
+                        <div class="text-gold" style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;">Chennai, Tamil Nadu</div>
+                    </div>
+                </article>
+
+                <article class="pf-review-card">
+                    <div>
+                        <div class="text-gold mb-3" aria-label="5 out of 5 stars">
+                            <i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i><i class="fas fa-star small"></i>
+                        </div>
+                        <p class="mb-4 text-dark" style="line-height: 1.75; font-style: italic;">"Truly boutique craftsmanship—the antique zari work stood out all evening. PINACLE is now my first stop for festive outfits."</p>
+                    </div>
+                    <div class="pt-3 border-top" style="border-color: var(--pf-cream) !important;">
+                        <div class="fw-semibold small text-dark">Shruti Deshmukh</div>
+                        <div class="text-gold" style="font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;">Pune, Maharashtra</div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- =========================================================
+     K. INSTAGRAM EDITORIAL LOOKBOOK GALLERY
+     ========================================================= -->
+<section class="pf-section-white pf-section-pad pf-reveal">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="eyebrow-text">@{{ INSTAGRAM_HANDLE }}</span>
+            <h2 class="serif-title display-6 fw-semibold mt-1 mb-2">As Seen In Our Lookbook</h2>
+            <p class="text-muted small mb-3">Behind-the-scenes loom diaries, styling reels &amp; real brides wearing PINACLE FASHIONS.</p>
+            <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold-outline btn-sm">
+                <i class="fab fa-instagram me-1"></i> Follow @{{ INSTAGRAM_HANDLE }}
+            </a>
+        </div>
+
+        <div class="row g-3 g-md-4">
+            <div class="col-6 col-md-3">
+                <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="pf-insta-item" aria-label="View Kanjeevaram zari look on Instagram">
+                    <img src="{% static 'images/insta/insta-1.jpg' %}" alt="Handwoven gold zari detail by PINACLE FASHIONS" loading="lazy" decoding="async">
+                    <div class="pf-insta-overlay">
+                        <i class="fab fa-instagram"></i>
+                        <span class="small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.16em;">Shop Look</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="pf-insta-item" aria-label="View boutique unboxing on Instagram">
+                    <img src="{% static 'images/insta/insta-2.jpg' %}" alt="PINACLE FASHIONS signature keepsake unboxing" loading="lazy" decoding="async">
+                    <div class="pf-insta-overlay">
+                        <i class="fab fa-instagram"></i>
+                        <span class="small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.16em;">Atelier Note</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="pf-insta-item" aria-label="View bridal organza drape on Instagram">
+                    <img src="{% static 'images/insta/insta-3.jpg' %}" alt="Bridal rose gold organza styling by PINACLE FASHIONS" loading="lazy" decoding="async">
+                    <div class="pf-insta-overlay">
+                        <i class="fab fa-instagram"></i>
+                        <span class="small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.16em;">Bridal Edit</span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-6 col-md-3">
+                <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="pf-insta-item" aria-label="View handloom silk craft on Instagram">
+                    <img src="{% static 'images/insta/insta-4.jpg' %}" alt="Handloom silk shuttle &amp; zari craftsmanship" loading="lazy" decoding="async">
+                    <div class="pf-insta-overlay">
+                        <i class="fab fa-instagram"></i>
+                        <span class="small text-uppercase" style="font-size: 0.7rem; letter-spacing: 0.16em;">Our Craft</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

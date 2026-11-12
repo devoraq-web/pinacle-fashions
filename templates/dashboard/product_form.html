@@ -1,0 +1,192 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="serif-title mb-1">{{ title }}</h3>
+        <p class="text-muted small mb-0">Fill in product specifications, pricing, inventory stock, and high-resolution images.</p>
+    </div>
+    <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-dark btn-sm">
+        <i class="fas fa-arrow-left me-1"></i> Back to Product List
+    </a>
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% include 'components/form_error_alert.html' with form=form image_errors=image_errors %}
+    <div class="row g-4">
+        
+        <!-- Left: Product Basic & Pricing Information -->
+        <div class="col-lg-8">
+            <!-- General Information Card -->
+            <div class="dash-card mb-4 p-4">
+                <h5 class="serif-title mb-3 pb-2 border-bottom">Product Details</h5>
+
+                <div class="mb-3">
+                    <label for="{{ form.name.id_for_label }}" class="form-label small fw-bold text-uppercase">Product Name *</label>
+                    {{ form.name }}
+                    {% include 'components/field_errors.html' with errors=form.name.errors %}
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="{{ form.sku.id_for_label }}" class="form-label small fw-bold text-uppercase">Product SKU / Code *</label>
+                        {{ form.sku }}
+                        <small class="text-muted" style="font-size: 0.72rem;">Unique reference e.g. PF-SR-101</small>
+                        {% include 'components/field_errors.html' with errors=form.sku.errors %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.category.id_for_label }}" class="form-label small fw-bold text-uppercase">Category *</label>
+                        {{ form.category }}
+                        {% include 'components/field_errors.html' with errors=form.category.errors %}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.description.id_for_label }}" class="form-label small fw-bold text-uppercase">Product Description *</label>
+                    {{ form.description }}
+                    {% include 'components/field_errors.html' with errors=form.description.errors %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.specifications.id_for_label }}" class="form-label small fw-bold text-uppercase">Specifications & Details</label>
+                    {{ form.specifications }}
+                    <small class="text-muted" style="font-size: 0.72rem;">Enter key: value pairs per line (e.g. Fabric: Pure Silk, Work: Zari Embroidery)</small>
+                    {% include 'components/field_errors.html' with errors=form.specifications.errors %}
+                </div>
+            </div>
+
+            <!-- Pricing & Inventory Card -->
+            <div class="dash-card mb-4 p-4">
+                <h5 class="serif-title mb-3 pb-2 border-bottom">Pricing & Stock Inventory</h5>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label for="{{ form.regular_price.id_for_label }}" class="form-label small fw-bold text-uppercase">Regular / MRP Price (₹) *</label>
+                        {{ form.regular_price }}
+                        {% include 'components/field_errors.html' with errors=form.regular_price.errors %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ form.sale_price.id_for_label }}" class="form-label small fw-bold text-uppercase">Sale / Offer Price (₹)</label>
+                        {{ form.sale_price }}
+                        <small class="text-muted" style="font-size: 0.72rem;">Leave blank if regular price applies</small>
+                        {% include 'components/field_errors.html' with errors=form.sale_price.errors %}
+                    </div>
+                    <div class="col-md-4">
+                        <label for="{{ form.stock_quantity.id_for_label }}" class="form-label small fw-bold text-uppercase">Stock Quantity *</label>
+                        {{ form.stock_quantity }}
+                        <small class="text-muted" style="font-size: 0.72rem;">Set 0 to display OUT OF STOCK</small>
+                        {% include 'components/field_errors.html' with errors=form.stock_quantity.errors %}
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="{{ form.available_sizes.id_for_label }}" class="form-label small fw-bold text-uppercase">Available Sizes</label>
+                        {{ form.available_sizes }}
+                        <small class="text-muted" style="font-size: 0.72rem;">Comma-separated e.g. S, M, L, XL or Free Size</small>
+                        {% include 'components/field_errors.html' with errors=form.available_sizes.errors %}
+                    </div>
+                    <div class="col-md-6">
+                        <label for="{{ form.available_colours.id_for_label }}" class="form-label small fw-bold text-uppercase">Available Colours</label>
+                        {{ form.available_colours }}
+                        <small class="text-muted" style="font-size: 0.72rem;">Comma-separated e.g. Maroon, Royal Blue, Gold</small>
+                        {% include 'components/field_errors.html' with errors=form.available_colours.errors %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Images Management -->
+            <div class="dash-card p-4">
+                <h5 class="serif-title mb-2 pb-2 border-bottom">Product Images & Gallery</h5>
+                <p class="text-muted small mb-3">Upload multiple photos. First image or selected image is displayed on cards.</p>
+
+                <div class="mb-4">
+                    <label for="id_product_images" class="form-label small fw-bold text-uppercase">Upload New Images</label>
+                    <input type="file" id="id_product_images" name="images" class="form-control" multiple accept="image/*">
+                    <small class="text-muted">Hold CTRL (or CMD) to select multiple photos at once.</small>
+                    {% include 'components/field_errors.html' with errors=image_errors %}
+                </div>
+
+                {% if is_edit and images %}
+                    <label class="form-label small fw-bold text-uppercase">Existing Gallery Images</label>
+                    <div class="dash-img-grid">
+                        {% for img in images %}
+                            <div class="dash-img-thumb {% if img.is_primary %}border-warning{% endif %}">
+                                <img src="{{ img.image.url }}" alt="Product Image">
+                                <div class="dash-img-actions">
+                                    <label class="text-white small m-0" title="Set as primary thumbnail">
+                                        <input type="radio" name="primary_image_id" value="{{ img.id }}" {% if img.is_primary %}checked{% endif %}>
+                                        <span style="font-size: 0.68rem;">Main</span>
+                                    </label>
+                                    <button type="submit" formaction="{% url 'dashboard:product_image_delete' img.id %}" class="btn btn-sm btn-link text-danger p-0 border-0" onclick="return confirm('Delete this image?');" title="Delete image">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- Right Column: Visibility & Publish Settings -->
+        <div class="col-lg-4">
+            <div class="dash-card p-4 sticky-top" style="top: 100px;">
+                <h5 class="serif-title mb-3 pb-2 border-bottom">Publish & Flags</h5>
+
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_active }}
+                    <label class="form-check-label fw-bold small ms-2" for="{{ form.is_active.id_for_label }}">
+                        Active In Store
+                    </label>
+                    <div class="text-muted" style="font-size: 0.72rem;">Customer can see and purchase this product</div>
+                    {% include 'components/field_errors.html' with errors=form.is_active.errors %}
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_featured }}
+                    <label class="form-check-label fw-bold small ms-2" for="{{ form.is_featured.id_for_label }}">
+                        Featured Product
+                    </label>
+                    <div class="text-muted" style="font-size: 0.72rem;">Highlighted on homepage collections</div>
+                    {% include 'components/field_errors.html' with errors=form.is_featured.errors %}
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    {{ form.is_new_arrival }}
+                    <label class="form-check-label fw-bold small ms-2" for="{{ form.is_new_arrival.id_for_label }}">
+                        New Arrival Drop
+                    </label>
+                    <div class="text-muted" style="font-size: 0.72rem;">Badged and listed under New Arrivals</div>
+                    {% include 'components/field_errors.html' with errors=form.is_new_arrival.errors %}
+                </div>
+
+                <div class="form-check form-switch mb-4">
+                    {{ form.is_best_seller }}
+                    <label class="form-check-label fw-bold small ms-2" for="{{ form.is_best_seller.id_for_label }}">
+                        Best Seller
+                    </label>
+                    <div class="text-muted" style="font-size: 0.72rem;">Displayed in Best Sellers showcase</div>
+                    {% include 'components/field_errors.html' with errors=form.is_best_seller.errors %}
+                </div>
+
+                <hr class="my-4">
+
+                <button type="submit" class="btn btn-gold btn-lg w-100 py-3 mb-2">
+                    <i class="fas fa-save me-1"></i> Save Product
+                </button>
+                <a href="{% url 'dashboard:product_list' %}" class="btn btn-outline-secondary w-100 py-2">
+                    Cancel
+                </a>
+            </div>
+        </div>
+
+    </div>
+</form>
+{% endblock %}
+

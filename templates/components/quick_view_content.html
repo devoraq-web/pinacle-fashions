@@ -1,0 +1,125 @@
+{% load static %}
+<div class="row g-4 align-items-start" id="quickViewBodyRoot">
+    <!-- Left Column: Visual Preview -->
+    <div class="col-md-6">
+        <div class="position-relative rounded overflow-hidden border" style="aspect-ratio: 3 / 4; background-color: var(--pf-cream); border-color: var(--pf-border) !important;">
+            {% if product.primary_image %}
+            <img src="{{ product.primary_image.image.url }}" alt="{{ product.name }}" id="qvMainImg" class="w-100 h-100" style="object-fit: cover; object-position: center top;">
+            {% else %}
+            <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ product.name }}" id="qvMainImg" class="w-100 h-100" style="object-fit: cover;">
+            {% endif %}
+
+            {% if not product.is_in_stock %}
+            <span class="pf-badge pf-badge-stockout">Sold Out</span>
+            {% elif product.is_on_sale %}
+            <span class="pf-badge pf-badge-sale">-{{ product.discount_percentage }}%</span>
+            {% endif %}
+        </div>
+
+        {% if product.images.count > 1 %}
+        <div class="pf-gallery-thumbs mt-3">
+            {% for img in product.images.all %}
+            <button type="button"
+                    class="pf-thumb-item p-0 {% if forloop.first %}active{% endif %} qv-thumb-btn"
+                    data-img-src="{{ img.image.url }}"
+                    aria-label="Preview image {{ forloop.counter }}">
+                <img src="{{ img.image.url }}" alt="{{ product.name }} thumbnail {{ forloop.counter }}">
+            </button>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Right Column: Options & Concierge Actions -->
+    <div class="col-md-6">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="eyebrow-text">{{ product.category.name }}</span>
+            <span class="small text-muted">SKU: <strong>{{ product.sku }}</strong></span>
+        </div>
+
+        <h3 class="serif-display h2 fw-semibold mb-2">{{ product.name }}</h3>
+
+        <div class="d-flex align-items-baseline flex-wrap gap-2 mb-3">
+            <span class="fs-3 fw-semibold text-dark">₹{{ product.price|floatformat:0 }}</span>
+            {% if product.is_on_sale %}
+            <span class="text-muted text-decoration-line-through">₹{{ product.regular_price|floatformat:0 }}</span>
+            <span class="pf-discount-tag">{{ product.discount_percentage }}% OFF</span>
+            {% endif %}
+        </div>
+
+        {% if product.description %}
+        <p class="small text-muted mb-3">{{ product.description|truncatewords:22 }}</p>
+        {% endif %}
+
+        {% if product.is_in_stock %}
+        <div class="mb-3">
+            <span class="badge rounded-pill" style="background: rgba(45, 106, 79, 0.12); color: var(--pf-success); font-weight: 500;">
+                <i class="fas fa-check-circle me-1"></i> Available ({{ product.stock_quantity }} ready to dispatch)
+            </span>
+        </div>
+
+        <form action="{% url 'store:cart_add' product.id %}" method="POST" class="ajax-add-to-cart-form" id="quickViewAddToCartForm">
+            {% csrf_token %}
+
+            {% if sizes %}
+            <div class="mb-3">
+                <span class="pf-selector-label">Select Size</span>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for sz in sizes %}
+                    <label class="pf-option-pill">
+                        <input type="radio" name="size" value="{{ sz }}" {% if forloop.first %}checked{% endif %} class="qv-option-input">
+                        <span>{{ sz }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if colours %}
+            <div class="mb-3">
+                <span class="pf-selector-label">Select Colour</span>
+                <div class="d-flex flex-wrap gap-2">
+                    {% for col in colours %}
+                    <label class="pf-option-pill">
+                        <input type="radio" name="colour" value="{{ col }}" {% if forloop.first %}checked{% endif %} class="qv-option-input">
+                        <span>{{ col }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="mb-4">
+                <span class="pf-selector-label">Quantity</span>
+                <div class="pf-qty-group">
+                    <button type="button" class="pf-qty-btn qv-qty-minus" aria-label="Decrease quantity"><i class="fas fa-minus small"></i></button>
+                    <input type="number" name="quantity" id="qvQtyInput" class="pf-qty-input qv-option-input" value="1" min="1" max="{{ product.stock_quantity }}" readonly>
+                    <button type="button" class="pf-qty-btn qv-qty-plus" data-max="{{ product.stock_quantity }}" aria-label="Increase quantity"><i class="fas fa-plus small"></i></button>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-gold justify-content-center py-2">
+                    <i class="fas fa-shopping-bag"></i> Add to Shopping Bag
+                </button>
+                <a href="{% url 'orders:checkout' %}?source=BUY_NOW&product_id={{ product.id }}&quantity=1{% if sizes %}&size={{ sizes.0|urlencode }}{% endif %}{% if colours %}&colour={{ colours.0|urlencode }}{% endif %}"
+                   id="quickViewBuyNowBtn"
+                   data-base-url="{% url 'orders:checkout' %}?source=BUY_NOW&product_id={{ product.id }}"
+                   class="btn btn-whatsapp-buy justify-content-center py-2">
+                    <i class="fab fa-whatsapp fs-5"></i> Buy Now via WhatsApp
+                </a>
+            </div>
+        </form>
+        {% else %}
+        <div class="alert border mb-3" style="background: rgba(185, 28, 28, 0.06); border-color: rgba(185, 28, 28, 0.25) !important; color: var(--pf-danger);">
+            <strong>Currently Out of Stock:</strong> This exclusive piece has sold out. Contact us on WhatsApp to request a custom restock alert.
+        </div>
+        {% endif %}
+
+        <div class="mt-3 pt-3 border-top d-flex justify-content-between align-items-center" style="border-color: var(--pf-border) !important;">
+            <a href="{{ product.get_absolute_url }}" class="small fw-semibold text-uppercase text-gold" style="letter-spacing: 0.12em;">
+                View Complete Specifications <i class="fas fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</div>

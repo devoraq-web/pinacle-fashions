@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Contact Atelier &amp; Concierge | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container text-center">
+        <span class="eyebrow-text">Personal Styling &amp; Support</span>
+        <h1 class="serif-display fw-semibold mt-2 mb-3">Contact PINACLE FASHIONS</h1>
+        <div class="gold-flourish-divider mx-auto" style="max-width: 240px;"><span>&#10022;</span></div>
+        <p class="text-muted mx-auto mb-0" style="max-width: 580px;">
+            Questions on bespoke blouse tailoring, bridal group curation, or shipping timelines? Our stylists respond swiftly.
+        </p>
+    </div>
+</section>
+
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Contact Channels -->
+            <div class="col-lg-5">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <h2 class="serif-title h4 fw-semibold mb-3">Concierge Channels</h2>
+                    <div class="pf-divider-gold"></div>
+
+                    <div class="d-flex flex-column gap-4 my-4">
+                        <div class="d-flex gap-3">
+                            <span class="pf-step-number flex-shrink-0"><i class="fab fa-whatsapp"></i></span>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-1">WhatsApp Styling Desk</h3>
+                                <p class="small text-muted mb-1">{{ WHATSAPP_DISPLAY_NUMBER }}</p>
+                                <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener noreferrer" class="small text-gold fw-semibold text-uppercase" style="letter-spacing: 0.1em;">Message Immediately &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <span class="pf-step-number flex-shrink-0"><i class="fab fa-instagram"></i></span>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-1">Instagram Lookbook</h3>
+                                <p class="small text-muted mb-1">@{{ INSTAGRAM_HANDLE }}</p>
+                                <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="small text-gold fw-semibold text-uppercase" style="letter-spacing: 0.1em;">Follow Atelier Drops &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <span class="pf-step-number flex-shrink-0"><i class="far fa-envelope"></i></span>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-1">Email Inquiries</h3>
+                                <p class="small text-muted mb-0"><a href="mailto:{{ SUPPORT_EMAIL }}" class="text-dark">{{ SUPPORT_EMAIL }}</a></p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <span class="pf-step-number flex-shrink-0"><i class="fas fa-location-dot"></i></span>
+                            <div>
+                                <h3 class="h6 fw-semibold mb-1">Atelier Origin</h3>
+                                <p class="small text-muted mb-0">{{ STORE_LOCATION }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Inquiry Form -->
+            <div class="col-lg-7">
+                <div class="pf-checkout-card h-100 mb-0">
+                    <h2 class="serif-title h4 fw-semibold mb-3">Send an Atelier Note</h2>
+                    <div class="pf-divider-gold"></div>
+
+                    {% if form.errors %}
+                    <div class="alert alert-danger small mb-4">
+                        {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                        {% for field in form %}
+                            {% for error in field.errors %}<div><strong>{{ field.label }}:</strong> {{ error }}</div>{% endfor %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" action="{% url 'store:contact' %}">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.name.id_for_label }}" class="form-label small fw-semibold">Full Name *</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.phone.id_for_label }}" class="form-label small fw-semibold">WhatsApp / Mobile *</label>
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label small fw-semibold">Email Address</label>
+                                {{ form.email }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ form.subject.id_for_label }}" class="form-label small fw-semibold">Subject / Product SKU *</label>
+                                {{ form.subject }}
+                            </div>
+                            <div class="col-12">
+                                <label for="{{ form.message.id_for_label }}" class="form-label small fw-semibold">Your Message *</label>
+                                {{ form.message }}
+                            </div>
+                            <div class="col-12 pt-2">
+                                <button type="submit" class="btn btn-gold px-4">
+                                    Send Message <i class="fas fa-paper-plane ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

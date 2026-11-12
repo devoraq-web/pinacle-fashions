@@ -1,0 +1,8 @@
+{% if errors %}
+<div class="invalid-feedback d-block mt-1 fw-medium" role="alert">
+    {% for error in errors %}
+        <div><i class="fas fa-exclamation-circle me-1"></i>{{ error }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+

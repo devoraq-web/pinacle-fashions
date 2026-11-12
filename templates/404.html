@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Page Not Found - PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="py-5 my-5 text-center">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <span class="pf-eyebrow d-block mb-3">404 — Luxury Lost</span>
+                <h1 class="pf-display-1 mb-3" style="font-size: 3.5rem;">Page Not Found</h1>
+                <p class="text-muted mb-4 lead">
+                    The drape or couture you seek seems to have moved or does not exist in our current collection.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'store:home' %}" class="pf-btn-primary">
+                        Return Home
+                    </a>
+                    <a href="{% url 'store:shop' %}" class="pf-btn-secondary">
+                        Explore Collection
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

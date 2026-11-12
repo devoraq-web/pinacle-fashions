@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login – PINACLE FASHIONS</title>
+    
+    <link rel="icon" type="image/jpeg" href="{% static 'images/pinacle-logo.jpg' %}">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body style="background: linear-gradient(135deg, #1C1917 0%, #2A2420 50%, #151311 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+
+    <div class="card border-0 shadow-lg p-4 p-sm-5" style="max-width: 440px; width: 100%; border-radius: 16px; background: rgba(255, 255, 255, 0.98);">
+        <div class="text-center mb-4">
+            <img src="{% static 'images/pinacle-logo.jpg' %}" alt="PINACLE FASHIONS Logo" class="pf-brand-logo mb-3" style="width: 76px; height: 76px;">
+            <h3 class="serif-title mb-1">PINACLE FASHIONS</h3>
+            <p class="text-muted small text-uppercase" style="letter-spacing: 0.15em;">Administrator Portal</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show small" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+            <div class="mb-3">
+                <label class="form-label small fw-bold text-uppercase">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="fas fa-user text-muted"></i></span>
+                    <input type="text" name="username" class="form-control" placeholder="Enter admin username" required autofocus>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
+                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 py-3 mb-3">
+                <i class="fas fa-sign-in-alt me-2"></i> Log In to Dashboard
+            </button>
+
+            <div class="text-center">
+                <a href="{% url 'store:home' %}" class="small text-muted text-decoration-none">
+                    <i class="fas fa-arrow-left me-1"></i> Return to Customer Website
+                </a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
+

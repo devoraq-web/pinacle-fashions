@@ -1,0 +1,80 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}Homepage Hero Banners{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="serif-title mb-1">Homepage Hero Banners</h3>
+        <p class="text-muted small mb-0">Manage the editorial image carousel slides displayed on the main storefront.</p>
+    </div>
+    <a href="{% url 'dashboard:banner_create' %}" class="btn btn-gold">
+        <i class="fas fa-plus me-1"></i> Add Hero Banner
+    </a>
+</div>
+
+<div class="dash-card">
+    <div class="table-responsive">
+        <table class="table dash-table">
+            <thead>
+                <tr>
+                    <th style="width: 140px;">Preview</th>
+                    <th>Heading & Subtitle</th>
+                    <th>CTA Target</th>
+                    <th>Sort Order</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in banners %}
+                    <tr>
+                        <td>
+                            <div class="rounded overflow-hidden border bg-light" style="width: 120px; height: 68px;">
+                                <img src="{{ b.image.url }}" alt="{{ b.title }}" class="w-100 h-100 object-fit-cover">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="small text-uppercase text-muted">{{ b.eyebrow }}</div>
+                            <div class="fw-bold text-dark">{{ b.title }}</div>
+                            {% if b.subtitle %}
+                                <div class="small text-muted text-truncate" style="max-width: 300px;">{{ b.subtitle }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="small">
+                            <div><strong>{{ b.cta_primary_text }}</strong> &rarr; <code>{{ b.cta_primary_url }}</code></div>
+                        </td>
+                        <td>{{ b.order }}</td>
+                        <td>
+                            {% if b.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Hidden</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{% url 'dashboard:banner_edit' b.id %}" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit Banner">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{% url 'dashboard:banner_delete' b.id %}" method="POST" class="d-inline" onsubmit="return confirm('Delete this homepage hero banner?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete Banner">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            No custom hero banners uploaded yet. The storefront currently displays the curated editorial slides. Click <strong>Add Hero Banner</strong> to upload custom banners.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

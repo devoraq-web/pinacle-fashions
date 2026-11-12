@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if selected_category %}{{ selected_category.name }}{% elif title %}{{ title }}{% else %}Shop All Collections{% endif %} | PINACLE FASHIONS
+{% endblock %}
+
+{% block content %}
+<!-- Editorial Page Header -->
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container">
+        <nav aria-label="breadcrumb" class="mb-2">
+            <ol class="breadcrumb small mb-0">
+                <li class="breadcrumb-item"><a href="{% url 'store:home' %}" class="text-muted">Home</a></li>
+                {% if selected_category %}
+                <li class="breadcrumb-item"><a href="{% url 'store:shop' %}" class="text-muted">Shop</a></li>
+                <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">{{ selected_category.name }}</li>
+                {% elif title %}
+                <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">{{ title }}</li>
+                {% else %}
+                <li class="breadcrumb-item active text-dark fw-medium" aria-current="page">Shop All</li>
+                {% endif %}
+            </ol>
+        </nav>
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+            <div>
+                <span class="eyebrow-text">PINACLE FASHIONS Atelier</span>
+                <h1 class="serif-display fw-semibold mt-1 mb-1">
+                    {% if title %}{{ title }}{% elif selected_category %}{{ selected_category.name }}{% elif sale_only %}Festive Offers Edit{% else %}All Curated Collections{% endif %}
+                </h1>
+                {% if subtitle %}
+                <p class="text-muted small mb-0">{{ subtitle }}</p>
+                {% elif selected_category and selected_category.description %}
+                <p class="text-muted small mb-0">{{ selected_category.description }}</p>
+                {% endif %}
+            </div>
+            <div class="small text-muted fw-medium">
+                Showing <strong class="text-dark">{{ total_count }}</strong> creation{{ total_count|pluralize }}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Catalog Grid & Filter Sidebar -->
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        <!-- Mobile Filter Toggle Button -->
+        <div class="d-flex d-lg-none justify-content-between align-items-center mb-3 gap-2">
+            <button class="btn btn-gold-outline btn-sm w-100 justify-content-center" type="button" data-bs-toggle="collapse" data-bs-target="#shopFilterPanel" aria-expanded="false" aria-controls="shopFilterPanel">
+                <i class="fas fa-sliders-h me-1"></i> Filter &amp; Refine
+            </button>
+        </div>
+
+        <div class="row g-4 align-items-start">
+            <!-- Left Filter Panel -->
+            <aside class="col-lg-3 collapse d-lg-block" id="shopFilterPanel" aria-label="Catalog Filters">
+                <div class="pf-checkout-card p-4 mb-0">
+                    <div class="d-flex justify-content-between align-items-center pb-3 mb-3 border-bottom" style="border-color: var(--pf-cream) !important;">
+                        <h2 class="serif-title h5 fw-semibold mb-0">Refine Edit</h2>
+                        <a href="{% url 'store:shop' %}" class="small text-gold fw-semibold text-uppercase" style="font-size: 0.72rem; letter-spacing: 0.1em;">Reset</a>
+                    </div>
+
+                    <form action="{% url 'store:shop' %}" method="GET">
+                        <!-- Search -->
+                        <div class="mb-4">
+                            <label for="shopSearchInput" class="pf-selector-label">Keyword or SKU</label>
+                            <input type="text" name="q" id="shopSearchInput" value="{{ search_query|default:'' }}" class="form-control form-control-sm" placeholder="e.g., Kanjeevaram, Kurti">
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-4">
+                            <label for="shopCategorySelect" class="pf-selector-label">Collection</label>
+                            <select name="category" id="shopCategorySelect" class="form-select form-select-sm">
+                                <option value="">All Categories</option>
+                                {% for cat in categories %}
+                                <option value="{{ cat.slug }}" {% if selected_category and selected_category.id == cat.id %}selected{% endif %}>
+                                    {{ cat.name }} ({{ cat.active_count }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Price Range -->
+                        <div class="mb-4">
+                            <span class="pf-selector-label">Price Range (₹)</span>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label for="minPriceInput" class="visually-hidden">Minimum Price</label>
+                                    <input type="number" name="min_price" id="minPriceInput" min="0" value="{{ min_price|default:'' }}" class="form-control form-control-sm" placeholder="Min ₹">
+                                </div>
+                                <div class="col-6">
+                                    <label for="maxPriceInput" class="visually-hidden">Maximum Price</label>
+                                    <input type="number" name="max_price" id="maxPriceInput" min="0" value="{{ max_price|default:'' }}" class="form-control form-control-sm" placeholder="Max ₹">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Filter Flags -->
+                        <div class="mb-4 d-flex flex-column gap-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="in_stock" value="1" id="inStockCheck" {% if in_stock_only %}checked{% endif %}>
+                                <label class="form-check-label small" for="inStockCheck">In Stock Ready to Ship</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="sale" value="1" id="saleOnlyCheck" {% if sale_only %}checked{% endif %}>
+                                <label class="form-check-label small" for="saleOnlyCheck">Festive Offers Only</label>
+                            </div>
+                        </div>
+
+                        {% if current_sort %}
+                        <input type="hidden" name="sort" value="{{ current_sort }}">
+                        {% endif %}
+
+                        <button type="submit" class="btn btn-gold btn-sm w-100 justify-content-center">
+                            Apply Filters
+                        </button>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Right Catalog Column -->
+            <div class="col-lg-9">
+                <!-- Sort Toolbar -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-3 mb-4 bg-white border rounded" style="border-color: var(--pf-border) !important;">
+                    <div class="small text-muted">
+                        {% if search_query %}
+                        Search results for "<strong class="text-dark">{{ search_query }}</strong>"
+                        {% else %}
+                        Curated luxury garments with direct WhatsApp concierge
+                        {% endif %}
+                    </div>
+
+                    <form method="GET" class="d-flex align-items-center gap-2 ms-auto">
+                        {% if search_query %}<input type="hidden" name="q" value="{{ search_query }}">{% endif %}
+                        {% if selected_category and request.resolver_match.url_name == 'shop' %}<input type="hidden" name="category" value="{{ selected_category.slug }}">{% endif %}
+                        {% if min_price %}<input type="hidden" name="min_price" value="{{ min_price }}">{% endif %}
+                        {% if max_price %}<input type="hidden" name="max_price" value="{{ max_price }}">{% endif %}
+                        {% if in_stock_only %}<input type="hidden" name="in_stock" value="1">{% endif %}
+                        {% if sale_only %}<input type="hidden" name="sale" value="1">{% endif %}
+                        <label for="shopSortSelect" class="small text-muted text-nowrap mb-0">Sort by:</label>
+                        <select name="sort" id="shopSortSelect" class="form-select form-select-sm" style="width: auto; min-width: 170px;" onchange="this.form.submit()">
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest Arrivals</option>
+                            <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="name_asc" {% if current_sort == 'name_asc' %}selected{% endif %}>Alphabetical (A–Z)</option>
+                            <option value="name_desc" {% if current_sort == 'name_desc' %}selected{% endif %}>Alphabetical (Z–A)</option>
+                        </select>
+                    </form>
+                </div>
+
+                {% if products %}
+                <div class="pf-product-grid pf-product-grid--shop">
+                    {% for product in products %}
+                        {% include 'components/product_card.html' with product=product %}
+                    {% endfor %}
+                </div>
+
+                <!-- Pagination -->
+                {% if page_obj.has_other_pages %}
+                <nav aria-label="Catalog pagination" class="mt-5 d-flex justify-content-center">
+                    <ul class="pagination mb-0 gap-1">
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link text-dark border" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category and request.resolver_match.url_name == 'shop' %}&category={{ selected_category.slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if in_stock_only %}&in_stock=1{% endif %}{% if sale_only %}&sale=1{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                                &laquo; Prev
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link border-0" style="background-color: var(--pf-black); color: var(--pf-gold-light);">{{ num }}</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link text-dark border" href="?page={{ num }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category and request.resolver_match.url_name == 'shop' %}&category={{ selected_category.slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if in_stock_only %}&in_stock=1{% endif %}{% if sale_only %}&sale=1{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link text-dark border" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query|urlencode }}{% endif %}{% if selected_category and request.resolver_match.url_name == 'shop' %}&category={{ selected_category.slug }}{% endif %}{% if min_price %}&min_price={{ min_price }}{% endif %}{% if max_price %}&max_price={{ max_price }}{% endif %}{% if in_stock_only %}&in_stock=1{% endif %}{% if sale_only %}&sale=1{% endif %}{% if current_sort %}&sort={{ current_sort }}{% endif %}">
+                                Next &raquo;
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+
+                {% else %}
+                <div class="pf-checkout-card text-center py-5">
+                    <i class="fas fa-gem text-gold fs-2 mb-3"></i>
+                    <h3 class="serif-title h4 mb-2">
+                        {% if selected_category or request.resolver_match.url_name == 'new_arrivals' %}
+                            No products available in this collection yet.
+                        {% elif search_query or min_price or max_price or in_stock_only or sale_only %}
+                            No matching creations found
+                        {% else %}
+                            No products available in this collection yet.
+                        {% endif %}
+                    </h3>
+                    <p class="small text-muted mb-4">
+                        {% if selected_category or request.resolver_match.url_name == 'new_arrivals' %}
+                            New creations added by our team will appear here automatically. Explore other categories or message our stylists on WhatsApp.
+                        {% else %}
+                            Try clearing your search filters or reach out to our stylists on WhatsApp for bespoke sourcing.
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-center gap-2 flex-wrap">
+                        <a href="{% url 'store:shop' %}" class="btn btn-gold btn-sm">View Full Catalog</a>
+                        <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener noreferrer" class="btn btn-gold-outline btn-sm">Ask Stylist on WhatsApp</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

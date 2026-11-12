@@ -1,0 +1,92 @@
+{% load static %}
+<article class="pf-product-card">
+    <div class="pf-product-media">
+        <a href="{{ product.get_absolute_url }}" class="d-block w-100 h-100" aria-label="{{ product.name }}">
+            {% if product.primary_image %}
+            <img src="{{ product.primary_image.image.url }}" alt="{{ product.primary_image.alt_text|default:product.name }}" class="pf-product-img" loading="lazy" decoding="async">
+            {% else %}
+            <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ product.name }}" class="pf-product-img" loading="lazy" decoding="async">
+            {% endif %}
+        </a>
+
+        <!-- Priority Badge -->
+        {% if not product.is_in_stock %}
+        <span class="pf-badge pf-badge-stockout">Out of Stock</span>
+        {% elif product.is_on_sale %}
+        <span class="pf-badge pf-badge-sale">-{{ product.discount_percentage }}%</span>
+        {% elif product.is_new_arrival %}
+        <span class="pf-badge pf-badge-new">New</span>
+        {% endif %}
+
+        <!-- Quick Actions: Wishlist & Quick View -->
+        <div class="pf-card-actions">
+            <button type="button"
+                    class="pf-card-btn btn-wishlist-toggle {% if product.id in wishlist_ids %}active{% endif %}"
+                    data-url="{% url 'store:wishlist_toggle' product.id %}"
+                    data-product-id="{{ product.id }}"
+                    title="{% if product.id in wishlist_ids %}Remove from Wishlist{% else %}Save to Wishlist{% endif %}"
+                    aria-label="{% if product.id in wishlist_ids %}Remove {{ product.name }} from wishlist{% else %}Save {{ product.name }} to wishlist{% endif %}">
+                <i class="{% if product.id in wishlist_ids %}fas{% else %}far{% endif %} fa-heart"></i>
+            </button>
+            <button type="button"
+                    class="pf-card-btn btn-quick-view"
+                    data-url="{% url 'store:quick_view' product.id %}"
+                    title="Quick View"
+                    aria-label="Quick view {{ product.name }}">
+                <i class="far fa-eye"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="pf-product-body">
+        <div class="pf-product-meta">
+            <span class="pf-product-category">{{ product.category.name }}</span>
+            {% if not product.is_in_stock %}
+            <span class="pf-product-stock-pill pf-stock-out"><i class="fas fa-circle-xmark"></i> Out of Stock</span>
+            {% elif product.stock_quantity <= 4 %}
+            <span class="pf-product-stock-pill pf-stock-low"><i class="fas fa-clock"></i> Only {{ product.stock_quantity }} left</span>
+            {% else %}
+            <span class="pf-product-stock-pill pf-stock-in"><i class="fas fa-check"></i> In Stock</span>
+            {% endif %}
+        </div>
+
+        <h3 class="pf-product-title">
+            <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        </h3>
+
+        <div class="pf-product-price">
+            <span class="pf-current-price">₹{{ product.price|floatformat:0 }}</span>
+            {% if product.is_on_sale %}
+            <span class="pf-regular-price">₹{{ product.regular_price|floatformat:0 }}</span>
+            <span class="pf-discount-tag">{{ product.discount_percentage }}% OFF</span>
+            {% endif %}
+        </div>
+
+        <div class="pf-card-bottom">
+            {% if product.is_in_stock %}
+            <form action="{% url 'store:cart_add' product.id %}" method="POST" class="ajax-add-to-cart-form m-0">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1">
+                {% if product.sizes_list %}
+                <input type="hidden" name="size" value="{{ product.sizes_list.0 }}">
+                {% endif %}
+                {% if product.colours_list %}
+                <input type="hidden" name="colour" value="{{ product.colours_list.0 }}">
+                {% endif %}
+                <button type="submit" class="btn btn-gold btn-gold-sm w-100 justify-content-center">
+                    <i class="fas fa-shopping-bag"></i> Add
+                </button>
+            </form>
+            <a href="{% url 'orders:checkout' %}?source=BUY_NOW&product_id={{ product.id }}&quantity=1{% if product.sizes_list %}&size={{ product.sizes_list.0|urlencode }}{% endif %}{% if product.colours_list %}&colour={{ product.colours_list.0|urlencode }}{% endif %}"
+               class="btn btn-dark-pf btn-sm w-100 d-inline-flex align-items-center justify-content-center gap-1"
+               style="font-size: 0.72rem; letter-spacing: 0.1em; padding: 8px 10px;">
+                <i class="fab fa-whatsapp"></i> Buy Now
+            </a>
+            {% else %}
+            <button type="button" class="btn btn-secondary btn-sm w-100" style="grid-column: 1 / -1; opacity: 0.72;" disabled>
+                Currently Out of Stock
+            </button>
+            {% endif %}
+        </div>
+    </div>
+</article>

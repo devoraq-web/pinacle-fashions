@@ -1,0 +1,210 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block page_title %}Executive Dashboard Overview{% endblock %}
+
+{% block content %}
+<!-- Top KPI Summary Cards -->
+<div class="row g-4 mb-5">
+    
+    <!-- Total Revenue -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="dash-stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="dash-stat-label">Total Revenue</span>
+                    <h3 class="dash-stat-val text-success">₹{{ total_revenue|intcomma }}</h3>
+                </div>
+                <div class="dash-stat-icon bg-success bg-opacity-10 text-success">
+                    <i class="fas fa-wallet"></i>
+                </div>
+            </div>
+            <div class="small text-muted mt-2">
+                <i class="fas fa-check text-success me-1"></i> Confirmed & Validated Orders
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="dash-stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="dash-stat-label">Total Orders</span>
+                    <h3 class="dash-stat-val">{{ total_orders }}</h3>
+                </div>
+                <div class="dash-stat-icon bg-primary bg-opacity-10 text-primary">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+            </div>
+            <div class="small text-muted mt-2">
+                <span class="text-warning fw-bold">{{ pending_orders }} Pending</span> | <span class="text-info fw-bold">{{ confirmed_orders }} Confirmed</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Products -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="dash-stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="dash-stat-label">Live Catalog</span>
+                    <h3 class="dash-stat-val">{{ total_products }}</h3>
+                </div>
+                <div class="dash-stat-icon bg-warning bg-opacity-10 text-warning">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+            </div>
+            <div class="small text-muted mt-2">
+                Across <strong>{{ total_categories }}</strong> Categories
+            </div>
+        </div>
+    </div>
+
+    <!-- Out of Stock -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="dash-stat-card">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="dash-stat-label">Out of Stock</span>
+                    <h3 class="dash-stat-val {% if out_of_stock_count > 0 %}text-danger{% else %}text-muted{% endif %}">{{ out_of_stock_count }}</h3>
+                </div>
+                <div class="dash-stat-icon bg-danger bg-opacity-10 text-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="small text-muted mt-2">
+                <a href="{% url 'dashboard:inventory' %}?filter=out" class="text-danger text-decoration-none">Review Stock Depletion <i class="fas fa-arrow-right small"></i></a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Recent Orders & Inventory Alerts Row -->
+<div class="row g-4">
+    
+    <!-- Recent Customer Orders -->
+    <div class="col-xl-8">
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <div>
+                    <h5 class="serif-title mb-0">Recent Customer Orders</h5>
+                    <small class="text-muted">Live WhatsApp orders received through website</small>
+                </div>
+                <a href="{% url 'dashboard:order_list' %}" class="btn btn-sm btn-outline-dark">
+                    View All Orders <i class="fas fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table dash-table">
+                    <thead>
+                        <tr>
+                            <th>Order Ref</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                            <tr>
+                                <td>
+                                    <strong class="text-dark">#{{ order.order_number }}</strong>
+                                    <div class="text-muted" style="font-size: 0.72rem;">{{ order.get_order_source_display }}</div>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold">{{ order.customer_name }}</div>
+                                    <div class="text-muted small"><i class="fab fa-whatsapp text-success me-1"></i>{{ order.customer_phone }}</div>
+                                </td>
+                                <td>{{ order.total_items_count }} item(s)</td>
+                                <td class="fw-bold">₹{{ order.total_price|intcomma }}</td>
+                                <td>
+                                    <span class="badge {{ order.status_badge_class }} badge-status">
+                                        {{ order.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="small text-muted">{{ order.created_at|date:"d M, H:i" }}</td>
+                                <td class="text-end">
+                                    <a href="{% url 'dashboard:order_detail' order.order_number %}" class="btn btn-sm btn-outline-dark py-1 px-2" title="Inspect Order">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center py-4 text-muted">
+                                    No customer orders placed yet. Orders will appear here in real-time.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Side: Low Stock Alerts & Quick Management -->
+    <div class="col-xl-4">
+        <div class="dash-card mb-4">
+            <div class="dash-card-header">
+                <div>
+                    <h6 class="serif-title mb-0">Low Stock Warning</h6>
+                    <small class="text-danger fw-semibold">Units <= 3 left</small>
+                </div>
+                <a href="{% url 'dashboard:inventory' %}" class="small text-muted text-decoration-none">Manage</a>
+            </div>
+            <div class="p-3">
+                {% if low_stock_products %}
+                    <div class="list-group list-group-flush">
+                        {% for prod in low_stock_products %}
+                            <div class="list-group-item px-0 py-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-semibold small text-truncate" style="max-width: 180px;">{{ prod.name }}</div>
+                                    <div class="text-muted" style="font-size: 0.72rem;">SKU: {{ prod.sku }}</div>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge bg-danger">{{ prod.stock_quantity }} left</span>
+                                    <a href="{% url 'dashboard:product_edit' prod.id %}" class="d-block small text-primary mt-1">Restock</a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-4 text-muted small">
+                        <i class="fas fa-check-circle text-success fs-3 mb-2 d-block"></i>
+                        All active products have healthy inventory!
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="dash-card">
+            <div class="dash-card-header">
+                <h6 class="serif-title mb-0">Quick Management</h6>
+            </div>
+            <div class="p-3">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'dashboard:product_create' %}" class="btn btn-gold btn-sm py-2">
+                        <i class="fas fa-plus me-1"></i> Add New Product & Images
+                    </a>
+                    <a href="{% url 'dashboard:category_create' %}" class="btn btn-outline-dark btn-sm py-2">
+                        <i class="fas fa-folder-plus me-1"></i> Create New Category
+                    </a>
+                    <a href="{% url 'dashboard:order_list' %}?status=PENDING" class="btn btn-outline-warning btn-sm py-2 text-dark">
+                        <i class="fas fa-clock me-1"></i> Review Pending WhatsApp Orders ({{ pending_orders }})
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+

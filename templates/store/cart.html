@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Shopping Bag – PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<div class="py-5 border-bottom" style="background: linear-gradient(135deg, #FAF7F2 0%, #EDE5D5 100%);">
+    <div class="container">
+        <span class="eyebrow-text mb-1">Your Selection</span>
+        <h1 class="serif-display display-5 mb-1">My Shopping Bag</h1>
+        <p class="text-muted small mb-0">Review your selected couture pieces before completing your order on WhatsApp.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    {% if cart|length > 0 %}
+        <div class="row g-5">
+            
+            <!-- Cart Items Table -->
+            <div class="col-lg-8">
+                <div class="bg-white rounded-3 border shadow-sm p-4" style="border-color: var(--pf-gold-border) !important;">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light small text-uppercase text-muted">
+                                <tr>
+                                    <th style="width: 45%;">Creation</th>
+                                    <th>Price</th>
+                                    <th style="width: 20%;">Quantity</th>
+                                    <th>Total</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart %}
+                                    <tr id="cart-row-{{ item.item_key }}" class="cart-item-row">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="rounded overflow-hidden border bg-light flex-shrink-0" style="width: 72px; height: 92px; border: 1px solid var(--pf-gold-border) !important;">
+                                                    {% if item.product.primary_image %}
+                                                        <img src="{{ item.product.primary_image.image.url }}" alt="{{ item.product.name }}" class="w-100 h-100 object-fit-cover">
+                                                    {% else %}
+                                                        <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ item.product.name }}" class="w-100 h-100 object-fit-cover p-2">
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <a href="{{ item.product.get_absolute_url }}" class="serif-display fw-bold text-dark text-decoration-none d-block mb-1" style="font-size: 1.15rem;">
+                                                        {{ item.product.name }}
+                                                    </a>
+                                                    <div class="small text-muted">
+                                                        Code: <span class="text-dark">{{ item.product.sku }}</span>
+                                                    </div>
+                                                    <div class="small text-muted">
+                                                        Size: <strong class="text-dark">{{ item.size }}</strong> | Colour: <strong class="text-dark">{{ item.colour }}</strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold cart-unit-price text-dark" data-item-key="{{ item.item_key }}" data-price="{{ item.unit_price }}">
+                                                ₹{{ item.unit_price|intcomma }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="pf-qty-group">
+                                                <button type="button" class="pf-qty-btn cart-qty-btn" data-item-key="{{ item.item_key }}" data-action="minus">
+                                                    <i class="fas fa-minus small"></i>
+                                                </button>
+                                                <input type="number" class="pf-qty-input cart-qty-input" data-item-key="{{ item.item_key }}" value="{{ item.quantity }}" min="1" max="{{ item.product.stock_quantity }}">
+                                                <button type="button" class="pf-qty-btn cart-qty-btn" data-item-key="{{ item.item_key }}" data-action="plus">
+                                                    <i class="fas fa-plus small"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="fw-bold text-dark cart-item-total fs-6" data-item-key="{{ item.item_key }}">
+                                                ₹{{ item.total_price|intcomma }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <button type="button" class="btn btn-sm btn-link text-danger cart-remove-btn" data-item-key="{{ item.item_key }}" title="Remove creation">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Cart Actions -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 pt-3 border-top gap-3">
+                        <a href="{% url 'store:shop' %}" class="btn btn-outline-dark btn-sm">
+                            <i class="fas fa-arrow-left me-1"></i> Continue Browsing
+                        </a>
+                        <form action="{% url 'store:cart_clear' %}" method="POST" class="d-inline" onsubmit="return confirm('Clear all creations from your bag?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link text-danger btn-sm text-decoration-none fw-semibold p-0">
+                                <i class="fas fa-times me-1"></i> Clear Bag
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary Sidebar -->
+            <div class="col-lg-4">
+                <div class="pf-summary-box">
+                    <h4 class="serif-display mb-3 pb-2 border-bottom" style="font-size: 1.4rem;">Order Summary</h4>
+                    
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Bag Subtotal:</span>
+                        <strong id="cart-subtotal-val" class="text-dark fs-6">₹{{ subtotal|intcomma }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-3 small">
+                        <span class="text-muted">Pan-India Courier:</span>
+                        <span class="badge bg-success">FREE COMPLIMENTARY</span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fs-5 fw-bold">Total Amount:</span>
+                        <span id="cart-grand-total-val" class="display-6 fw-bold text-dark">₹{{ total|intcomma }}</span>
+                    </div>
+
+                    <!-- Proceed to WhatsApp Checkout Button -->
+                    <a href="{% url 'orders:checkout' %}?source=CART" class="btn btn-whatsapp-buy w-100 py-3 mb-3">
+                        <i class="fab fa-whatsapp fs-5"></i> Proceed to WhatsApp Checkout
+                    </a>
+
+                    <!-- Security & Info Notes -->
+                    <div class="p-3 bg-light rounded-3 small border" style="border-color: var(--pf-gold-border) !important;">
+                        <div class="d-flex align-items-center gap-2 mb-1 fw-bold text-dark">
+                            <i class="fas fa-lock text-gold"></i> Direct WhatsApp Checkout
+                        </div>
+                        <p class="text-muted mb-0" style="font-size: 0.78rem; line-height: 1.6;">
+                            Zero payment gateway hassle! Your order is registered in our database, and delivery is verified directly with our team on WhatsApp.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    {% else %}
+        <!-- Empty Cart State -->
+        <div class="text-center py-5 bg-white rounded-3 border shadow-sm p-5 my-4" style="border-color: var(--pf-gold-border) !important;">
+            <div class="mb-4">
+                <span class="d-inline-flex align-items-center justify-content-center bg-gold-subtle rounded-circle" style="width: 110px; height: 110px;">
+                    <i class="fas fa-shopping-bag fa-3x text-gold"></i>
+                </span>
+            </div>
+            <h2 class="serif-display display-6 mb-2">Your Shopping Bag is Empty</h2>
+            <p class="text-muted small mx-auto mb-4" style="max-width: 440px;">
+                Explore our festive Kanjeevarams, bridal silks, regal salwar suits, and designer kurtis to add timeless elegance to your wardrobe.
+            </p>
+            <a href="{% url 'store:shop' %}" class="btn btn-gold px-4 py-3">
+                <i class="fas fa-sparkles me-2"></i> Explore Collections Now
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

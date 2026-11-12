@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Order Placed – PINACLE FASHIONS #{{ order.order_number }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            
+            <!-- Success Hero Banner -->
+            <div class="p-4 p-md-5 bg-white rounded-4 border shadow-sm text-center mb-4 pf-order-success-hero">
+                <div class="pf-order-success-badge-wrap">
+                    <div class="pf-order-success-badge bg-success text-white rounded-circle shadow-lg">
+                        <i class="fab fa-whatsapp fa-3x"></i>
+                    </div>
+                </div>
+
+                <div class="eyebrow-text">Order Registration Confirmed</div>
+                <h1 class="serif-display display-5 mb-2">Thank You For Choosing PINACLE FASHIONS</h1>
+                <p class="text-muted">
+                    Order Reference Code: <strong class="text-dark fs-5">#{{ order.order_number }}</strong>
+                </p>
+
+                <!-- Crucial WhatsApp Action Button -->
+                <div class="my-4 p-4 rounded-3 border bg-light" style="border-color: var(--pf-gold-border) !important;">
+                    <h5 class="serif-display mb-2 text-dark" style="font-size: 1.3rem;">Crucial Final Step:</h5>
+                    <p class="text-muted small mb-3" style="max-width: 500px; margin: 0 auto;">
+                        Click the button below to open WhatsApp and tap <strong>SEND</strong> to confirm your delivery with PINACLE FASHIONS:
+                    </p>
+                    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-whatsapp-buy btn-lg px-4 py-3 shadow">
+                        <i class="fab fa-whatsapp fs-4"></i> OPEN WHATSAPP TO CONFIRM ORDER
+                    </a>
+                </div>
+
+                <!-- Thank You Note Card Visual -->
+                <div class="mt-4 pt-3 border-top">
+                    <div class="mx-auto" style="max-width: 480px;">
+                        <img src="{% static 'images/pinacle-thank-you.jpg' %}" alt="PINACLE FASHIONS Thank You" class="img-fluid w-100 rounded-3 border shadow-sm" style="border-color: var(--pf-gold-border) !important;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Details Card -->
+            <div class="p-4 p-md-5 bg-white rounded-4 border shadow-sm" style="border-color: var(--pf-gold-border) !important;">
+                <h4 class="serif-display mb-4 pb-2 border-bottom" style="font-size: 1.4rem;">Order Summary Details</h4>
+
+                <!-- Customer Details -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6">
+                        <div class="text-muted small text-uppercase fw-bold" style="letter-spacing: 0.08em;">Recipient:</div>
+                        <div class="fw-semibold text-dark fs-6">{{ order.customer_name }}</div>
+                        <div class="text-muted small">WhatsApp: {{ order.customer_phone }}</div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="text-muted small text-uppercase fw-bold" style="letter-spacing: 0.08em;">Delivery Destination:</div>
+                        <div class="text-dark small">{{ order.address.formatted_address }}</div>
+                    </div>
+                </div>
+
+                <!-- Items Breakdown -->
+                <div class="table-responsive mb-4">
+                    <table class="table align-middle">
+                        <thead class="table-light small text-uppercase text-muted">
+                            <tr>
+                                <th>Creation</th>
+                                <th>Details</th>
+                                <th>Qty</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            {% if item.product_image_url %}
+                                                <img src="{{ item.product_image_url }}" alt="{{ item.product_name }}" style="width: 48px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid var(--pf-gold-border);">
+                                            {% endif %}
+                                            <div>
+                                                <div class="fw-bold small">{{ item.product_name }}</div>
+                                                <div class="text-muted" style="font-size: 0.72rem;">Code: {{ item.product_code }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="small text-muted">
+                                        {{ item.selected_size }} / {{ item.selected_colour }}
+                                    </td>
+                                    <td class="small fw-bold">{{ item.quantity }}</td>
+                                    <td class="text-end fw-bold small">₹{{ item.total_price|intcomma }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end text-muted small">Subtotal:</td>
+                                <td class="text-end fw-semibold small">₹{{ order.subtotal|intcomma }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end text-muted small">Pan-India Courier:</td>
+                                <td class="text-end text-success fw-semibold small">FREE COMPLIMENTARY</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" class="text-end fs-6 fw-bold">Grand Total:</td>
+                                <td class="text-end fs-5 fw-bold text-dark">₹{{ order.total_price|intcomma }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Navigation Back to Shop -->
+                <div class="text-center mt-4 pt-3 border-top">
+                    <a href="{% url 'store:shop' %}" class="btn btn-outline-dark me-2">
+                        <i class="fas fa-shopping-bag me-1"></i> Continue Shopping
+                    </a>
+                    <a href="{% url 'store:home' %}" class="btn btn-link text-muted text-decoration-none">
+                        Return to Home
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if auto_redirect %}
+<script>
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            window.location.href = "{{ whatsapp_url|escapejs }}";
+        }, 800);
+    });
+</script>
+{% endif %}
+{% endblock %}

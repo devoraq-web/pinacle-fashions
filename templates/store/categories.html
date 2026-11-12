@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Collections &amp; Categories | PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="pf-section-cream py-5 border-bottom" style="border-color: var(--pf-border) !important;">
+    <div class="container text-center">
+        <span class="eyebrow-text">Explore Every Weave</span>
+        <h1 class="serif-display fw-semibold mt-2 mb-3">Curated Collections</h1>
+        <div class="gold-flourish-divider mx-auto" style="max-width: 220px;"><span>&#10022;</span></div>
+        <p class="text-muted small mx-auto mb-0" style="max-width: 560px;">
+            From heirloom pure silk sarees to festive bridal lehengas and artisan temple jewellery—select a house edit to explore.
+        </p>
+    </div>
+</section>
+
+<section class="pf-section-ivory pf-section-pad">
+    <div class="container">
+        <div class="pf-category-grid">
+            {% for cat in categories %}
+            <a href="{{ cat.get_absolute_url }}" class="pf-category-card">
+                {% if cat.image %}
+                <img src="{{ cat.image.url }}" alt="{{ cat.name }} collection" loading="lazy" decoding="async">
+                {% else %}
+                <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ cat.name }}" loading="lazy" decoding="async">
+                {% endif %}
+                <div class="pf-category-overlay">
+                    <h2 class="pf-category-title">{{ cat.name }}</h2>
+                    <span class="pf-category-cta">Shop Now <i class="fas fa-arrow-right ms-1"></i></span>
+                </div>
+            </a>
+            {% empty %}
+            <div class="text-center py-5 text-muted" style="grid-column: 1 / -1;">
+                No collections available yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

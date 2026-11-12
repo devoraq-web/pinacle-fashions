@@ -1,0 +1,105 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% load static %}
+
+{% block page_title %}Categories Management{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="serif-title mb-1">Product Categories</h3>
+        <p class="text-muted small mb-0">Organize and curate store categories for easy customer discovery.</p>
+    </div>
+    <a href="{% url 'dashboard:category_create' %}" class="btn btn-gold">
+        <i class="fas fa-plus me-1"></i> Add New Category
+    </a>
+</div>
+
+<div class="dash-card">
+    <div class="table-responsive">
+        <table class="table dash-table">
+            <thead>
+                <tr>
+                    <th style="width: 80px;">Image</th>
+                    <th>Category Name</th>
+                    <th>Slug</th>
+                    <th>Products Count</th>
+                    <th>Sort Order</th>
+                    <th>Status</th>
+                    <th>Featured on Home</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cat in categories %}
+                    <tr>
+                        <td>
+                            <div class="rounded overflow-hidden border bg-light" style="width: 50px; height: 50px;">
+                                {% if cat.image %}
+                                    <img src="{{ cat.image.url }}" alt="{{ cat.name }}" class="w-100 h-100 object-fit-cover">
+                                {% else %}
+                                    <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ cat.name }}" class="w-100 h-100 object-fit-cover p-1">
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <a href="{% url 'dashboard:category_edit' cat.id %}" class="fw-bold text-dark text-decoration-none">
+                                {{ cat.name }}
+                            </a>
+                            {% if cat.description %}
+                                <div class="small text-muted text-truncate" style="max-width: 280px;">{{ cat.description }}</div>
+                            {% endif %}
+                        </td>
+                        <td><code class="text-muted">{{ cat.slug }}</code></td>
+                        <td>
+                            <span class="badge bg-light text-dark border">{{ cat.prod_count }} products</span>
+                        </td>
+                        <td>{{ cat.order }}</td>
+                        <td>
+                            {% if cat.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cat.is_featured %}
+                                <span class="badge bg-success">Yes</span>
+                            {% else %}
+                                <span class="badge bg-secondary">No</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end text-nowrap">
+                            <form action="{% url 'dashboard:category_toggle_active' cat.id %}" method="POST" class="d-inline">
+                                {% csrf_token %}
+                                {% if cat.is_active %}
+                                    <button type="submit" class="btn btn-sm btn-outline-warning py-1 px-2" title="Deactivate Category">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-sm btn-outline-success py-1 px-2" title="Activate Category">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                {% endif %}
+                            </form>
+                            <a href="{% url 'dashboard:category_edit' cat.id %}" class="btn btn-sm btn-outline-dark py-1 px-2" title="Edit Category">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{% url 'dashboard:category_delete' cat.id %}" method="POST" class="d-inline" onsubmit="return confirm('Delete category {{ cat.name }}? All attached products will need reassignment.');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete Category">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">No categories created yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+

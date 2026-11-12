@@ -1,0 +1,38 @@
+# Environment & Secrets
+.env
+*.env
+.env.*
+!.env.example
+
+# Database
+db.sqlite3
+db.sqlite3-journal
+*.sql
+*.sqlite
+*.sqlite3
+*.bak
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+venv/
+.venv/
+env/
+
+# Django Static & User Uploads
+/staticfiles/
+/media/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# Local backups
+/backups/
+backups/

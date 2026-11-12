@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Server Error - PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<section class="py-5 my-5 text-center">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <span class="pf-eyebrow d-block mb-3">500 — Service Interruption</span>
+                <h1 class="pf-display-1 mb-3" style="font-size: 3.5rem;">Unexpected Error</h1>
+                <p class="text-muted mb-4 lead">
+                    We are experiencing a temporary issue. Please refresh or contact our WhatsApp concierge for immediate assistance.
+                </p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'store:home' %}" class="pf-btn-primary">
+                        Return Home
+                    </a>
+                    <a href="https://wa.me/916238006820?text=Hello%20PINACLE%20FASHIONS,%20I%20encountered%20an%20issue%20on%20the%20website" target="_blank" class="pf-btn-secondary">
+                        <i class="fab fa-whatsapp me-2"></i> Concierge Help
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+

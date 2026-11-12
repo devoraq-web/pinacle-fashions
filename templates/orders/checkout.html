@@ -1,0 +1,257 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}VIP WhatsApp Checkout – PINACLE FASHIONS{% endblock %}
+
+{% block content %}
+<div class="py-5 border-bottom" style="background: linear-gradient(135deg, #FAF7F2 0%, #EDE5D5 100%);">
+    <div class="container">
+        <div class="d-flex align-items-center gap-4">
+            <span class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle shadow-lg" style="width: 58px; height: 58px; border: 2px solid #FFFFFF;">
+                <i class="fab fa-whatsapp fa-2x"></i>
+            </span>
+            <div>
+                <span class="eyebrow-text mb-1">VIP Concierge Checkout</span>
+                <h1 class="serif-display display-6 mb-1">Complete Your Order on WhatsApp</h1>
+                <p class="text-muted small mb-0">
+                    No card or bank login required. Your order is registered in our database, and finalized directly with our styling team on WhatsApp.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container py-5">
+    <form id="whatsappCheckoutForm" method="POST" action="{% url 'orders:checkout' %}">
+        {% csrf_token %}
+        {{ form.product_id }}
+        {{ form.quantity }}
+        {{ form.size }}
+        {{ form.colour }}
+        {{ form.order_source }}
+        {{ form.checkout_token }}
+
+        {% if form.errors %}
+        <div class="alert alert-danger border-0 shadow-sm mb-4" role="alert">
+            <h6 class="fw-semibold mb-1"><i class="fas fa-exclamation-triangle me-2"></i>Please review the highlighted delivery details:</h6>
+            <ul class="small mb-0 ps-3">
+                {% for error in form.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                    <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="row g-5">
+            
+            <!-- Left Column: Step 1 (Products) & Step 2 (Address) -->
+            <div class="col-lg-7">
+                
+                <!-- STEP 1: Selected Product Details -->
+                <div class="pf-checkout-card">
+                    <div class="pf-step-title">
+                        <span class="pf-step-number">1</span>
+                        <span>Selected Couture Pieces</span>
+                    </div>
+
+                    <div class="list-group list-group-flush">
+                        {% for item in items_preview %}
+                            <div class="list-group-item px-0 py-3 d-flex align-items-center gap-3">
+                                <div class="rounded overflow-hidden border bg-light flex-shrink-0" style="width: 76px; height: 96px; border: 1px solid var(--pf-gold-border) !important;">
+                                    {% if item.image_url %}
+                                        <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-100 h-100 object-fit-cover">
+                                    {% else %}
+                                        <img src="{% static 'images/pinacle-logo.jpg' %}" alt="{{ item.name }}" class="w-100 h-100 object-fit-cover p-2">
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h5 class="serif-display mb-1" style="font-size: 1.15rem;">{{ item.name }}</h5>
+                                    <div class="small text-muted mb-1">
+                                        Product Code: <strong class="text-dark">{{ item.sku }}</strong>
+                                    </div>
+                                    <div class="small text-muted mb-1">
+                                        Size: <span class="badge bg-light text-dark border">{{ item.size }}</span>
+                                        | Colour: <span class="badge bg-light text-dark border">{{ item.colour }}</span>
+                                        | Qty: <strong class="text-dark">{{ item.quantity }}</strong>
+                                    </div>
+                                    <div class="small text-muted">
+                                        Unit Price: <strong>₹{{ item.unit_price|intcomma }}</strong>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fs-5 fw-bold text-dark">₹{{ item.total_price|intcomma }}</div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- STEP 2: Customer Details & Shipping Address -->
+                <div class="pf-checkout-card">
+                    <div class="pf-step-title">
+                        <span class="pf-step-number">2</span>
+                        <span>Delivery Address & WhatsApp Contact</span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">Full Recipient Name *</label>
+                            {{ form.full_name }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">WhatsApp Mobile Number *</label>
+                            {{ form.mobile_number }}
+                            <small class="text-muted" style="font-size: 0.72rem;">We will verify your order & send tracking here</small>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-uppercase">House Name / Flat No. / Building *</label>
+                            {{ form.house_name_number }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-uppercase">Street / Area / Landmark *</label>
+                            {{ form.street_location }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">City / Town *</label>
+                            {{ form.city }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">District *</label>
+                            {{ form.district }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">State *</label>
+                            {{ form.state }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-uppercase">Postal PIN Code *</label>
+                            {{ form.pin_code }}
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label small fw-bold text-uppercase">Optional Delivery Notes</label>
+                            {{ form.delivery_instructions }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Step 3 (Order Summary) & Confirm on WhatsApp -->
+            <div class="col-lg-5">
+                <div class="pf-summary-box">
+                    <div class="pf-step-title mb-3">
+                        <span class="pf-step-number">3</span>
+                        <span>Order Summary</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Items Subtotal:</span>
+                        <strong class="text-dark fs-6">₹{{ subtotal|intcomma }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2 small">
+                        <span class="text-muted">Pan-India Express Courier:</span>
+                        <span class="text-success fw-bold">COMPLIMENTARY (FREE)</span>
+                    </div>
+
+                    <hr class="my-3">
+
+                    <div class="d-flex justify-content-between align-items-baseline mb-4">
+                        <span class="fs-5 fw-bold text-dark">Grand Total:</span>
+                        <span class="display-6 fw-bold text-dark">₹{{ grand_total|intcomma }}</span>
+                    </div>
+
+                    <!-- STEP 5: Confirm Button -->
+                    <button type="submit" id="btnConfirmWhatsApp" class="btn btn-whatsapp-buy w-100 py-3 mb-3">
+                        <i class="fab fa-whatsapp fs-4"></i> CONFIRM ORDER ON WHATSAPP
+                    </button>
+
+                    <p class="text-center text-muted small mb-4" style="font-size: 0.78rem; line-height: 1.6;">
+                        <i class="fas fa-shield-alt me-1 text-gold"></i> Submitting registers your order in our database and opens WhatsApp with your pre-formatted order message. Simply tap <strong>Send</strong> inside WhatsApp!
+                    </p>
+
+                    <!-- Trust Cards with Gold Hairline Borders -->
+                    <div class="p-3 bg-light rounded-3 border" style="border-color: var(--pf-gold-border) !important;">
+                        <div class="d-flex align-items-center gap-3 mb-2">
+                            <i class="fas fa-crown text-gold fs-5"></i>
+                            <div>
+                                <div class="small fw-bold text-dark">100% Authentic Handloom Assurance</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Inspected for weave density and pure zari borders</div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fas fa-shipping-fast text-gold fs-5"></i>
+                            <div>
+                                <div class="small fw-bold text-dark">Express Doorstep Dispatch</div>
+                                <div class="text-muted" style="font-size: 0.72rem;">Full courier tracking sent directly to your WhatsApp</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Handles WhatsApp Checkout submission with automatic dynamic message generation & redirection
+    const checkoutForm = document.getElementById('whatsappCheckoutForm');
+    const confirmBtn = document.getElementById('btnConfirmWhatsApp');
+
+    if (checkoutForm && confirmBtn) {
+        checkoutForm.addEventListener('submit', function(e) {
+            if (!this.checkValidity()) {
+                return;
+            }
+
+            e.preventDefault();
+            const origHtml = confirmBtn.innerHTML;
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Generating WhatsApp Order...';
+
+            const formData = new FormData(this);
+            formData.append('ajax', '1');
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.open(data.whatsapp_url, '_blank');
+                    window.location.href = data.success_url;
+                } else {
+                    alert(data.message || 'Error creating order. Please verify your address details.');
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = origHtml;
+                }
+            })
+            .catch(err => {
+                console.error('Checkout error:', err);
+                checkoutForm.submit();
+            });
+        });
+    }
+</script>
+{% endblock %}
