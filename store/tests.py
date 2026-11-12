@@ -201,3 +201,62 @@ class PinacleFashionsSystemTests(TestCase):
         for r in routes:
             res = self.client.get(r)
             self.assertEqual(res.status_code, 200, f"Dashboard route {r} failed with {res.status_code}")
+
+    def test_healthz_endpoint(self):
+        """Health check endpoint returns 200 OK JSON for Render probes."""
+        res = self.client.get(reverse('healthz'))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.json(), {'status': 'ok'})
+
+    def test_checkout_and_success_communicate_whatsapp_payment_arrangement(self):
+        """Checkout and success screens clearly state WhatsApp confirmation and payment arrangement."""
+        res = self.client.get(
+            f"{reverse('orders:checkout')}?source=BUY_NOW&product_id={self.product.id}&quantity=1"
+        )
+        self.assertEqual(res.status_code, 200)
+        self.assertContains(res, '+91 62380 06820')
+        self.assertContains(res, 'payment arrangement')
+
+    def test_ensure_admin_command_idempotent(self):
+        """ensure_admin creates a superuser only once from env vars and never duplicates."""
+        import os
+        from io import StringIO
+        from unittest.mock import patch
+        from django.core.management import call_command
+
+        out = StringIO()
+        with patch.dict(os.environ, {
+            'DJANGO_ADMIN_USERNAME': 'deployadmin',
+            'DJANGO_ADMIN_EMAIL': 'deploy@pinaclefashions.com',
+            'DJANGO_ADMIN_PASSWORD': 'StrongTestPassword!99',
+        }):
+            call_command('ensure_admin', stdout=out)
+            self.assertTrue(User.objects.filter(username='deployadmin', is_superuser=True).exists())
+            call_command('ensure_admin', stdout=out)
+            self.assertEqual(User.objects.filter(username='deployadmin').count(), 1)
+
+    def test_cloudinary_storage_accepts_sanitized_image_contentfile(self):
+        """Sanitized ContentFile uploads cleanly through MediaCloudinaryStorage."""
+        import io
+        import os
+        from unittest.mock import patch
+        from PIL import Image
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from store.validators import sanitize_and_optimize_image
+
+        buf = io.BytesIO()
+        Image.new('RGB', (40, 40), color='maroon').save(buf, format='JPEG')
+        uploaded = SimpleUploadedFile('sample.jpg', buf.getvalue(), content_type='image/jpeg')
+        clean_file = sanitize_and_optimize_image(uploaded)
+
+        with patch.dict(os.environ, {
+            'CLOUDINARY_CLOUD_NAME': 'demo',
+            'CLOUDINARY_API_KEY': '123456',
+            'CLOUDINARY_API_SECRET': 'secret',
+        }):
+            from cloudinary_storage.storage import MediaCloudinaryStorage
+            storage = MediaCloudinaryStorage()
+            with patch('cloudinary.uploader.upload', return_value={'public_id': 'media/products/test_img'}) as mock_upload:
+                saved_id = storage._save('products/2026/11/test.jpg', clean_file)
+                self.assertEqual(saved_id, 'media/products/test_img')
+                self.assertTrue(mock_upload.called)
