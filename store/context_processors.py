@@ -32,9 +32,9 @@ def brand_info_processor(request):
     return {
         'BRAND_NAME': settings.BRAND_NAME,
         'WHATSAPP_NUMBER': settings.WHATSAPP_NUMBER,
-        'WHATSAPP_DISPLAY_NUMBER': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 62380 06820'),
+        'WHATSAPP_DISPLAY_NUMBER': getattr(settings, 'WHATSAPP_DISPLAY_NUMBER', '+91 9292247815'),
         'INSTAGRAM_HANDLE': getattr(settings, 'INSTAGRAM_HANDLE', 'pinaclefashions'),
-        'INSTAGRAM_URL': getattr(settings, 'INSTAGRAM_URL', 'https://instagram.com/pinaclefashions'),
+        'INSTAGRAM_URL': getattr(settings, 'INSTAGRAM_URL', 'https://www.instagram.com/pinaclefashions/'),
         'SUPPORT_EMAIL': getattr(settings, 'SUPPORT_EMAIL', 'pinaclefashions@gmail.com'),
         'STORE_LOCATION': getattr(settings, 'STORE_LOCATION', 'Kerala, India'),
     }

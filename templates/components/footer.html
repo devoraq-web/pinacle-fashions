@@ -71,15 +71,19 @@
 
                 <div class="small" style="color: #CFC5B9;">
                     <div class="mb-2 d-flex align-items-center gap-2">
-                        <i class="fab fa-whatsapp text-gold"></i>
-                        <span>{{ WHATSAPP_DISPLAY_NUMBER }}</span>
+                        <a href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none pf-footer-subtle-link d-inline-flex align-items-center gap-2" aria-label="WhatsApp {{ WHATSAPP_DISPLAY_NUMBER }}">
+                            <i class="fab fa-whatsapp text-gold" aria-hidden="true"></i>
+                            <span>{{ WHATSAPP_DISPLAY_NUMBER }}</span>
+                        </a>
                     </div>
                     <div class="mb-2 d-flex align-items-center gap-2">
-                        <i class="fab fa-instagram text-gold"></i>
-                        <span>@{{ INSTAGRAM_HANDLE }}</span>
+                        <a href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener noreferrer" class="text-decoration-none pf-footer-subtle-link d-inline-flex align-items-center gap-2" aria-label="Instagram @{{ INSTAGRAM_HANDLE }}">
+                            <i class="fab fa-instagram text-gold" aria-hidden="true"></i>
+                            <span>@{{ INSTAGRAM_HANDLE }}</span>
+                        </a>
                     </div>
                     <div class="d-flex align-items-center gap-2">
-                        <i class="fas fa-location-dot text-gold"></i>
+                        <i class="fas fa-location-dot text-gold" aria-hidden="true"></i>
                         <span>{{ STORE_LOCATION }}</span>
                     </div>
                 </div>

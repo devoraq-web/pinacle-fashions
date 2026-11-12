@@ -175,7 +175,7 @@ class UpgradeStorefrontAndSecurityTests(TestCase):
         order = Order.objects.first()
         # Server recomputed price: 9500 * 2 = 19000
         self.assertEqual(order.total_price, Decimal('19000.00'))
-        self.assertIn('wa.me/916238006820', order.whatsapp_url)
+        self.assertIn('wa.me/919292247815', order.whatsapp_url)
         item = order.items.first()
         # Tampered variants clamped back to product catalog defaults
         self.assertEqual(item.selected_size, 'Free Size')

@@ -243,10 +243,10 @@ CACHES = {
 
 # Brand Details & WhatsApp Configuration
 BRAND_NAME = 'PINACLE FASHIONS'
-WHATSAPP_NUMBER = os.getenv('WHATSAPP_NUMBER', '916238006820')
-WHATSAPP_DISPLAY_NUMBER = '+91 62380 06820'
-INSTAGRAM_HANDLE = 'pinaclefashions'
-INSTAGRAM_URL = 'https://instagram.com/pinaclefashions'
+WHATSAPP_NUMBER = os.getenv('WHATSAPP_NUMBER', '919292247815')
+WHATSAPP_DISPLAY_NUMBER = os.getenv('WHATSAPP_DISPLAY_NUMBER', '+91 9292247815')
+INSTAGRAM_HANDLE = os.getenv('INSTAGRAM_HANDLE', 'pinaclefashions')
+INSTAGRAM_URL = os.getenv('INSTAGRAM_URL', 'https://www.instagram.com/pinaclefashions/')
 SUPPORT_EMAIL = 'pinaclefashions@gmail.com'
 STORE_LOCATION = 'Kerala, India'
 

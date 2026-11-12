@@ -22,7 +22,11 @@ services:
       - key: CLOUDINARY_API_SECRET
         sync: false
       - key: WHATSAPP_NUMBER
-        value: "916238006820"
+        value: "919292247815"
+      - key: WHATSAPP_DISPLAY_NUMBER
+        value: "+91 9292247815"
+      - key: INSTAGRAM_URL
+        value: "https://www.instagram.com/pinaclefashions/"
       - key: BRAND_NAME
         value: "PINACLE FASHIONS"
       - key: DJANGO_ADMIN_USERNAME

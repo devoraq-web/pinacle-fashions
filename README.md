@@ -9,8 +9,8 @@ Designed with an aesthetic inspired by high-end Indian ethnic couture, featuring
 ## 🌟 Brand Identity
 
 - **Brand Name**: PINACLE FASHIONS
-- **Instagram**: [@pinaclefashions](https://instagram.com/pinaclefashions)
-- **WhatsApp Order & Support Line**: `+916238006820`
+- **Instagram**: [@pinaclefashions](https://www.instagram.com/pinaclefashions/)
+- **WhatsApp Order & Support Line**: `+919292247815`
 - **Brand Aesthetic**: Regal Indian handloom, Kanjeevarams, Banarasi brocades, designer kurtis, and festive bridal couture.
 - **Logo**: Features the official circular gold-crested PINACLE FASHIONS insignia with the regal silhouette drape.
 
@@ -41,7 +41,7 @@ Designed with an aesthetic inspired by high-end Indian ethnic couture, featuring
   3. **Customer Address Collection**: Full Name, WhatsApp Number, House/Villa No., Street/Area, City, District, State, PIN Code, and Delivery Notes.
   4. **Order Summary**: Subtotal, Free Shipping, and Grand Total.
   5. **Confirm on WhatsApp**: Creates an immutable order record with price snapshots in the Django database, decrements inventory stock, and redirects to:
-     `https://wa.me/916238006820?text=ENCODED_ORDER_MESSAGE`
+     `https://wa.me/919292247815?text=ENCODED_ORDER_MESSAGE`
 - **Formatted WhatsApp Order Message Example**:
   ```text
   🌟 *NEW ORDER - PINACLE FASHIONS* 🌟

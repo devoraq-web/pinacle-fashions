@@ -134,7 +134,7 @@ class PinacleFashionsSystemTests(TestCase):
         self.product.refresh_from_db()
         self.assertEqual(self.product.stock_quantity, initial_stock - 1)
 
-        self.assertIn('https://wa.me/916238006820?text=', order.whatsapp_url)
+        self.assertIn('https://wa.me/919292247815?text=', order.whatsapp_url)
         self.assertIn('PINACLE', order.whatsapp_url)
 
     def test_cart_checkout_multiple_items(self):
@@ -214,7 +214,7 @@ class PinacleFashionsSystemTests(TestCase):
             f"{reverse('orders:checkout')}?source=BUY_NOW&product_id={self.product.id}&quantity=1"
         )
         self.assertEqual(res.status_code, 200)
-        self.assertContains(res, '+91 62380 06820')
+        self.assertContains(res, '+91 9292247815')
         self.assertContains(res, 'payment arrangement')
 
     def test_ensure_admin_command_idempotent(self):
@@ -260,3 +260,28 @@ class PinacleFashionsSystemTests(TestCase):
                 saved_id = storage._save('products/2026/11/test.jpg', clean_file)
                 self.assertEqual(saved_id, 'media/products/test_img')
                 self.assertTrue(mock_upload.called)
+
+    def test_footer_instagram_and_new_whatsapp_links(self):
+        """Footer Instagram icon/link and all WhatsApp links reflect centralized branding."""
+        home_res = self.client.get(reverse('store:home'))
+        self.assertEqual(home_res.status_code, 200)
+        self.assertContains(
+            home_res,
+            'href="https://www.instagram.com/pinaclefashions/" target="_blank" rel="noopener noreferrer"',
+        )
+        self.assertContains(home_res, 'href="https://wa.me/919292247815"')
+        self.assertContains(home_res, '+91 9292247815')
+        self.assertNotContains(home_res, '6238006820')
+        self.assertNotContains(home_res, '62380 06820')
+
+        contact_res = self.client.get(reverse('store:contact'))
+        self.assertEqual(contact_res.status_code, 200)
+        self.assertContains(contact_res, 'https://wa.me/919292247815')
+        self.assertContains(contact_res, '+91 9292247815')
+        self.assertContains(contact_res, 'https://www.instagram.com/pinaclefashions/')
+
+        detail_res = self.client.get(
+            reverse('store:product_detail', kwargs={'slug': self.product.slug})
+        )
+        self.assertEqual(detail_res.status_code, 200)
+        self.assertContains(detail_res, 'https://wa.me/919292247815?text=')
